@@ -41,6 +41,7 @@
             this.picShow = new System.Windows.Forms.PictureBox();
             this.btnAuto = new System.Windows.Forms.Button();
             this.tAuto = new System.Windows.Forms.Timer(this.components);
+            this.button1 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picShow)).BeginInit();
             this.SuspendLayout();
@@ -152,11 +153,22 @@
             this.tAuto.Interval = 2000;
             this.tAuto.Tick += new System.EventHandler(this.tAuto_Tick);
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(33, 204);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 13;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // frmClient
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(486, 391);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.btnAuto);
             this.Controls.Add(this.picShow);
             this.Controls.Add(this.btnExit);
@@ -188,6 +200,7 @@
         private System.Windows.Forms.PictureBox picShow;
         private System.Windows.Forms.Button btnAuto;
         private System.Windows.Forms.Timer tAuto;
+        private System.Windows.Forms.Button button1;
     }
 }
 

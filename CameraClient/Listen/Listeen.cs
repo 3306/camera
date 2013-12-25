@@ -6,7 +6,6 @@ using System.Net.Sockets;
 using System.Threading;
 using System.IO;
 using System.Windows.Forms;
-
 namespace Listen
 {
     public class Listeen

@@ -80,6 +80,10 @@
       <Project>{067A6A6D-E960-4458-9EC0-38C779CAC7B0}</Project>
       <Name>ClassClient</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ListenerDLL\ListenerDLL.csproj">
+      <Project>{e2c4b8b2-86d7-4589-b8bf-273bec98bba2}</Project>
+      <Name>ListenerDLL</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
