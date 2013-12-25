@@ -15,14 +15,14 @@ namespace ClassClient
         private static NetworkStream netStream;//新加的
         private static FileStream filestream = null;//新加的
         private static string downFile;
-        public static bool beginConnection(string cName,string ip,string p)
+        public static bool beginConnection(string sName,string sIP,string sProt)
         {
             int port = 0;
             IPAddress myIP = IPAddress.Parse("127.0.0.1");
 
             try
             {
-                myIP = IPAddress.Parse(ip);
+                myIP = IPAddress.Parse(sIP);
             }
             catch 
             {
@@ -31,7 +31,7 @@ namespace ClassClient
             client = new TcpClient();
             try
             {
-                port = Int32.Parse(p);
+                port = Int32.Parse(sProt);
             }
             catch 
             {
@@ -39,31 +39,29 @@ namespace ClassClient
             }
             try
             {
-                if (cName != "" && ip == "")
+                if (sName != "" && sIP == "")
                 {
-                    client.Connect(cName, port);
+                    client.Connect(sName, port);
                     netStream = client.GetStream();
                     byte[] bb = new byte[6400];
-
                     i = netStream.Read(bb, 0, 6400);
                     downFile = System.Text.Encoding.BigEndianUnicode.GetString(bb);
                     return true;
                    
                 }
-                if (ip != "" && p == "")
+                if (sIP != "" && sProt == "")
                 {  
                     
                     client.Connect(myIP, port);
                     netStream = client.GetStream();
                     byte[] bb = new byte[6400];
-
                     int i = netStream.Read(bb, 0, 6400);
                     downFile = System.Text.Encoding.BigEndianUnicode.GetString(bb);
                     return true;
                     
                 }
 
-                if (ip != "" && p != "")
+                if (sIP != "" && sProt != "")
                 {
                     client.Connect(myIP, port);
                     netStream = client.GetStream();
@@ -80,6 +78,7 @@ namespace ClassClient
             }
             catch (Exception ee) 
             {
+                throw ee;
                 return false;
             }
             return false;
@@ -90,7 +89,6 @@ namespace ClassClient
             try
             {
                 //构造新的文件流
-            
                 filestream = new FileStream(Application.StartupPath + "\\test.jpg", FileMode.OpenOrCreate, FileAccess.Write);
                 //获取服务器网络流
                 netStream = client.GetStream();
@@ -106,10 +104,11 @@ namespace ClassClient
             }
             catch (Exception)
             {
-                return false;
-                
+
+
             }
             return false;
+            
         
         }
         public static bool endConnection()

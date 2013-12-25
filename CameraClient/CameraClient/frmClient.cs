@@ -24,7 +24,10 @@ namespace CameraClient
 
         private void btnBegin_Click(object sender, EventArgs e)
         {
-            if (!Client.beginConnection(txtCname.Text.Trim(),txtIP.Text.Trim(),txtPort.Text.Trim()))
+            string serverName = this.txtCname.Text.Trim();
+            string serverIP = this.txtIP.Text.Trim();
+            string serverPort = this.txtPort.Text.Trim();
+            if (!Client.beginConnection(serverName,serverIP,serverPort))
             {
                 MessageBox.Show( "连接失败！！");
             }
