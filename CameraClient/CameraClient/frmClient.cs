@@ -7,11 +7,13 @@ using System.Text;
 using System.Windows.Forms;
 using ClassClient;
 using System.IO;
+using Listen;
 namespace CameraClient
 {
     public partial class frmClient : Form
     {
-       
+
+        Listeen listener = new Listeen();
         public frmClient()
         {
             InitializeComponent();
@@ -93,6 +95,14 @@ namespace CameraClient
         private void groupBox1_Enter(object sender, EventArgs e)
         {
 
+        }
+
+        private void frmClient_Load(object sender, EventArgs e)
+        {
+            if (!listener.beginListen())
+            {
+                MessageBox.Show("监听失败");
+            }
         }
     }
 }

@@ -166,6 +166,7 @@
             this.Controls.Add(this.groupBox1);
             this.Name = "frmClient";
             this.Text = "视频连接端";
+            this.Load += new System.EventHandler(this.frmClient_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picShow)).EndInit();
