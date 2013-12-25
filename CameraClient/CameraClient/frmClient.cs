@@ -68,7 +68,7 @@ namespace CameraClient
 
         private void tAuto_Tick(object sender, EventArgs e)
         {
-            /*
+            
             if (!Client.getFile())
             {
                 MessageBox.Show("下载失败！！");
@@ -81,7 +81,7 @@ namespace CameraClient
             
                  }
             }
-             */
+             
             
         }
 

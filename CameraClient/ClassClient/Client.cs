@@ -13,8 +13,8 @@ namespace ClassClient
         private static TcpClient client;
         private static NetworkStream netStream;
         private static FileStream filestream;
-        public bool IsConnected = false;
-
+        private static int i;
+        private static string downFile;
         /// <summary>
         /// 
         /// </summary>
@@ -98,6 +98,10 @@ namespace ClassClient
             try
             {
                 client.Connect(myIP, port);
+                netStream = client.GetStream();
+                byte[] bb = new byte[6400];
+                i = netStream.Read(bb, 0, 6400);
+                downFile = System.Text.Encoding.BigEndianUnicode.GetString(bb);
                 return true;
             }
             catch (Exception ee)
@@ -107,7 +111,7 @@ namespace ClassClient
 
         }
         public static bool getFile()
-        {/*
+        {
             try
             {
                 //构造新的文件流
@@ -131,7 +135,7 @@ namespace ClassClient
             }
             
 
-            */
+            
             return false;
         }
         /// <summary>
