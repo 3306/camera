@@ -26,7 +26,9 @@ namespace ServerDLL
                 ep = new EncoderParameter(enc, 15L);//质量等级为25%   
                 epa.Param[0] = ep;
                 //i.Save(Application.StartupPath + "\\test.jpg", ici, epa);
-                i.Save(Application.StartupPath + "\\test.jpg", System.Drawing.Imaging.ImageFormat.Jpeg);
+                Guid tempCartId = Guid.NewGuid();
+
+                i.Save(Application.StartupPath +"\\"+tempCartId+".jpg", System.Drawing.Imaging.ImageFormat.Jpeg);
                 i.Dispose();
             }
             catch (Exception ex)
