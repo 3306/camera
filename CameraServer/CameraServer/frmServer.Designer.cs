@@ -70,7 +70,6 @@
             // 
             // tSave
             // 
-            this.tSave.Enabled = true;
             this.tSave.Interval = 2000;
             this.tSave.Tick += new System.EventHandler(this.tSave_Tick);
             // 

@@ -19,7 +19,7 @@ namespace ServerDLL
             {
                 //   Initialize   the   necessary   objects   
                 ici = ClassEncode.GetEncoderInfo("image/jpeg");
-                enc = Encoder.Quality;//设置保存质量   
+                enc = Encoder.Quality;//设置保存质量                                                                         
                 epa = new EncoderParameters(1);
 
                 //   Set   the   compression   level   
