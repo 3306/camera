@@ -13,7 +13,7 @@ namespace ListenerDLL
     {
         private static int port;//新加的
         private static Socket sock;//新加的
-        private static int number;//新加的
+        private static int number;//新加的大师大师
 
         private static int j;//新加的
         private static TcpListener listener;//新加的
