@@ -10,82 +10,104 @@ namespace ClassClient
 {
     public class Client
     {
-        private static TcpClient client;//新加的
-        private static int i;//新加的
-        private static NetworkStream netStream;//新加的
-        private static FileStream filestream = null;//新加的
-        private static string downFile;
-        public static bool beginConnection(string sName,string sIP,string sProt)
+        private static TcpClient client;
+        private static NetworkStream netStream;
+        private static FileStream filestream;
+        public bool IsConnected = false;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        private static void download()
+        {
+            try
+            {
+                down(ref netStream);
+            }
+            catch (Exception ex)
+            {
+                
+                throw ex;
+            }
+
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="stream"></param>
+        private static void down(ref NetworkStream stream)
+        {
+            try
+            {
+                int length = 1024;
+                byte[] bye = new byte[1024];
+                int tt = stream.Read(bye, 0, length);
+                //下行循环读取网络流并写进文件
+                while (tt > 0)
+                {
+                    string ss = System.Text.Encoding.ASCII.GetString(bye);
+                    int x = ss.IndexOf("<EOF>");
+                    if (x != -1)
+                    {
+                        filestream.Write(bye, 0, x);
+                        filestream.Flush();
+                        break;
+                    }
+                    else
+                    {
+                        filestream.Write(bye, 0, tt);
+                        filestream.Flush();
+                    }
+                    tt = stream.Read(bye, 0, length);
+                }
+                filestream.Close();
+            }
+            catch (Exception ex)
+            {
+                
+                throw ex;
+            }
+        }
+        /// <summary>
+        /// 连接服务器
+        /// </summary>
+        /// <param name="sIP">前端窗口传入的服务器端IP</param>
+        /// <param name="sProt">前端窗口传入的服务器端Port</param>
+        /// <returns></returns>
+        public bool beginConnection(string sIP, string sProt)
         {
             int port = 0;
             IPAddress myIP = IPAddress.Parse("127.0.0.1");
-
+            client = new TcpClient();
             try
             {
                 myIP = IPAddress.Parse(sIP);
             }
-            catch 
+            catch
             {
                 return false;
             }
-            client = new TcpClient();
             try
             {
                 port = Int32.Parse(sProt);
             }
-            catch 
+            catch
             {
-                return false; 
+                return false;
             }
             try
             {
-                if (sName != "" && sIP == "")
-                {
-                    client.Connect(sName, port);
-                    netStream = client.GetStream();
-                    byte[] bb = new byte[6400];
-                    i = netStream.Read(bb, 0, 6400);
-                    downFile = System.Text.Encoding.BigEndianUnicode.GetString(bb);
-                    return true;
-                   
-                }
-                if (sIP != "" && sProt == "")
-                {  
-                    
-                    client.Connect(myIP, port);
-                    netStream = client.GetStream();
-                    byte[] bb = new byte[6400];
-                    int i = netStream.Read(bb, 0, 6400);
-                    downFile = System.Text.Encoding.BigEndianUnicode.GetString(bb);
-                    return true;
-                    
-                }
-
-                if (sIP != "" && sProt != "")
-                {
-                    client.Connect(myIP, port);
-                    netStream = client.GetStream();
-                    byte[] bb = new byte[6400];
-                    int i = netStream.Read(bb, 0, 6400);
-                    downFile = bb.ToString();
-                    downFile = System.Text.Encoding.BigEndianUnicode.GetString(bb);
-                    downFile = downFile.Replace("\0","");
-                    return true;
-                    
-                }
-
-
+                client.Connect(myIP, port);
+                return true;
             }
-            catch (Exception ee) 
+            catch (Exception ee)
             {
                 throw ee;
-                return false;
             }
-            return false;
 
         }
         public static bool getFile()
-        {
+        {/*
             try
             {
                 //构造新的文件流
@@ -107,10 +129,15 @@ namespace ClassClient
 
 
             }
-            return false;
             
-        
+
+            */
+            return false;
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public static bool endConnection()
         {
             try
@@ -123,72 +150,12 @@ namespace ClassClient
                 client.Close();
                 return true;
             }
-            catch 
+            catch
             {
                 return false;
             }
-            return false;
         }
 
-
-
-        private static void download()
-        {
-            try
-            {
-                down(ref netStream);
-            }
-            catch (Exception ex)
-            {
-                
-                throw ex;
-            }
-
-        }
-        private static void down(ref NetworkStream stream)
-        {
-            try
-            {
-                int length = 1024;
-                byte[] bye = new byte[1024];
-
-                int tt = stream.Read(bye, 0, length);
-
-                //下行循环读取网络流并写进文件
-                while (tt > 0)
-                {
-                    string ss = System.Text.Encoding.ASCII.GetString(bye);
-                    int x = ss.IndexOf("<EOF>");
-                    if (x != -1)
-                    {
-
-                        filestream.Write(bye, 0, x);
-                        filestream.Flush();
-                        break;
-                    }
-                    else
-                    {
-                        filestream.Write(bye, 0, tt);
-                        filestream.Flush();
-                    }
-                    tt = stream.Read(bye, 0, length);
-
-                }
-
-                filestream.Close();
-            }
-            catch (Exception ex)
-            {
-                
-                throw ex;
-            }
-
-
-
-        }
 
     }
-    
-		
-
 }

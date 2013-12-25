@@ -24,10 +24,10 @@ namespace CameraClient
 
         private void btnBegin_Click(object sender, EventArgs e)
         {
-            string serverName = this.txtCname.Text.Trim();
             string serverIP = this.txtIP.Text.Trim();
             string serverPort = this.txtPort.Text.Trim();
-            if (!Client.beginConnection(serverName,serverIP,serverPort))
+            Client client = new Client();
+            if (client.beginConnection(serverIP,serverPort) == false)
             {
                 MessageBox.Show( "连接失败！！");
             }
@@ -41,19 +41,19 @@ namespace CameraClient
 
         private void btnDownload_Click(object sender, EventArgs e)
         {
-            if (!Client.getFile())
+          /*  if (!Client.getFile())
             {
                 MessageBox.Show("下载失败！！");
             }
             else
             {
                 //MessageBox.Show("下载成功！！");
-            }
+            }*/
         }
 
         private void btnClose_Click(object sender, EventArgs e)
         {
-            if (!Client.endConnection())
+            /*if (!Client.endConnection())
             {
                 MessageBox.Show("关闭失败！！");
             }
@@ -63,10 +63,12 @@ namespace CameraClient
                 this.btnClose.Enabled = false;
                 this.btnBegin.Enabled = true;
             }
+             */
         }
 
         private void tAuto_Tick(object sender, EventArgs e)
         {
+            /*
             if (!Client.getFile())
             {
                 MessageBox.Show("下载失败！！");
@@ -79,6 +81,7 @@ namespace CameraClient
             
                  }
             }
+             */
             
         }
 
