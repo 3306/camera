@@ -7,7 +7,7 @@ namespace CameraServer
     static class Program
     {
         /// <summary>
-        /// 应用程序的主入口点。
+        /// 应用程序的主入口点。ssssdssd
         /// </summary>
         [STAThread]
         static void Main()
