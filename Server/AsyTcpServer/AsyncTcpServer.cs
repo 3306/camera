@@ -148,29 +148,31 @@ namespace AsyTcpServer
         /// <param name="ar"></param>
         private void HandleDatagramReceived(IAsyncResult ar)
         {
-            if (IsRunning)
-            {
+            if (IsRunning) return;
+           
+            
                 TcpClientState internalClient = (TcpClientState)ar.AsyncState;
-                NetworkStream networStream = internalClient.NetworkStream;
+                if (!internalClient.TcpClient.Connected) return;
 
+                NetworkStream networStream = internalClient.NetworkStream;
                 int numberOfReadBytes = 0;
                 try
                 {
                     numberOfReadBytes = networStream.EndRead(ar);
                 }
-                catch
+                catch(Exception ex)
                 {
-                    numberOfReadBytes = 0; 
+                   
+                    numberOfReadBytes = 0;
+                    throw ex;
                 }
-                if (numberOfReadBytes == 0)
-                {
-                    lock (this.clients)
-                    {
-                        this.clients.Remove(internalClient);
-                        RaiseClientDisconnected(internalClient.TcpClient);
-                        return;
-                    }
-                }
+                //if (numberOfReadBytes == 0)
+                //{
+                    //connection has been closed
+                    //TcpClientState internalClientToBeThrowAway;
+                  //  string tcpClientKey = internalClient.TcpClient.Client.RemoteEndPoint.ToString();
+                    
+                //}
 
                 //received byte and trigger event notification
                 byte[] receivedBytes = new byte[numberOfReadBytes];
@@ -180,7 +182,7 @@ namespace AsyTcpServer
 
                 // continue listening for tcp datagram packets
                 networStream.BeginRead(internalClient.Buffer,0,internalClient.Buffer.Length,HandleDatagramReceived,internalClient);
-            }
+            
         }  
         #endregion 
 
