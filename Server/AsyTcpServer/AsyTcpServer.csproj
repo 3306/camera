@@ -41,6 +41,9 @@
   <ItemGroup>
     <Compile Include="AsyncTcpServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TcpClientConnectedEventArgs.cs" />
+    <Compile Include="TcpClientDisconnectEventArgs.cs" />
+    <Compile Include="TcpDatagramReceivedEventArgs.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

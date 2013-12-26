@@ -7,7 +7,7 @@ using System.Net.Sockets;
 
 namespace AsyTcpServer
 {
-    class AsyncTcpServer : IDisposable
+    public class AsyncTcpServer : IDisposable
     {
         #region Fields
 
@@ -186,11 +186,11 @@ namespace AsyTcpServer
 
         #region Event
         //接收到数据报文事件
-        public event EventHandler<TcpDatagramReceivedEventArgs<byte[]>> DatagramReceived;
+        public event EventHandler<TcpDatagramReceivedEventArgs<byte[]>> DatagramReceived; 
         //接收到数据报文明文事件
         public event EventHandler<TcpDatagramReceivedEventArgs<string>> PlaintextReceived;
 
-        private void RaisePlaintextReceived(TcpClient sender, byte[] datagram)
+        private void RaiseDatagramReceived(TcpClient sender, byte[] datagram)
         {
             if (DatagramReceived != null)
             {
@@ -228,6 +228,11 @@ namespace AsyTcpServer
         #endregion
 
         #region Send
+        private void GuardRunning()
+        {
+            if (!IsRunning)
+                throw new InvalidProgramException("This TCP server has not been started yet.");
+        }
 
         /// <summary>
         /// 发送报文至指定的客户端
@@ -236,8 +241,7 @@ namespace AsyTcpServer
         /// <param name="datagram">报文</param>
         public void Send(TcpClient tcpClient, byte[] datagram)
         {
-            if (!IsRunning)
-                throw new InvalidProgramException("This TCP server has not been started.");
+            GuardRunning();
 
             if (tcpClient == null)
                 throw new ArgumentNullException("tcpClient");
@@ -245,13 +249,18 @@ namespace AsyTcpServer
             if (datagram == null)
                 throw new ArgumentNullException("datagram");
 
-            tcpClient.GetStream().BeginWrite(
-              datagram, 0, datagram.Length, HandleDatagramWritten, tcpClient);
-        }
-
-        private void HandleDatagramWritten(IAsyncResult ar)
-        {
-            ((TcpClient)ar.AsyncState).GetStream().EndWrite(ar);
+            try
+            {
+                NetworkStream stream = tcpClient.GetStream();
+                if (stream.CanWrite)
+                {
+                    stream.BeginWrite(datagram, 0, datagram.Length, HandleDatagramWritten, tcpClient);
+                }
+            }
+            catch (ObjectDisposedException ex)
+            {
+                //ExceptionHandler.Handle(ex);
+            }
         }
 
         /// <summary>
@@ -268,35 +277,116 @@ namespace AsyTcpServer
         /// 发送报文至所有客户端
         /// </summary>
         /// <param name="datagram">报文</param>
-        public void SendAll(byte[] datagram)
+        public void SendToAll(byte[] datagram)
         {
-            if (!IsRunning)
-                throw new InvalidProgramException("This TCP server has not been started.");
+            GuardRunning();
 
-            for (int i = 0; i < this.clients.Count; i++)
-            {
-                Send(this.clients[i].TcpClient, datagram);
-            }
+            //foreach (var client in clients.Values)
+            //{
+              //  Send(client.TcpClient, datagram);
+            //}
         }
 
         /// <summary>
         /// 发送报文至所有客户端
         /// </summary>
         /// <param name="datagram">报文</param>
-        public void SendAll(string datagram)
+        public void SendToAll(string datagram)
         {
-            if (!IsRunning)
-                throw new InvalidProgramException("This TCP server has not been started.");
+            GuardRunning();
 
-            SendAll(this.Encoding.GetBytes(datagram));
+            SendToAll(this.Encoding.GetBytes(datagram));
         }
-        #endregion 
 
+        private void HandleDatagramWritten(IAsyncResult ar)
+        {
+            try
+            {
+                ((TcpClient)ar.AsyncState).GetStream().EndWrite(ar);
+            }
+            catch (ObjectDisposedException ex)
+            {
+               // ExceptionHandler.Handle(ex);
+            }
+            catch (InvalidOperationException ex)
+            {
+                //ExceptionHandler.Handle(ex);
+            }
+            //catch (IOException ex)
+            //{
+                //ExceptionHandler.Handle(ex);
+            //}
+        }
+
+        /// <summary>
+        /// 发送报文至指定的客户端
+        /// </summary>
+        /// <param name="tcpClient">客户端</param>
+        /// <param name="datagram">报文</param>
+        public void SyncSend(TcpClient tcpClient, byte[] datagram)
+        {
+            GuardRunning();
+
+            if (tcpClient == null)
+                throw new ArgumentNullException("tcpClient");
+
+            if (datagram == null)
+                throw new ArgumentNullException("datagram");
+
+            try
+            {
+                NetworkStream stream = tcpClient.GetStream();
+                if (stream.CanWrite)
+                {
+                    stream.Write(datagram, 0, datagram.Length);
+                }
+            }
+            catch (ObjectDisposedException ex)
+            {
+                //ExceptionHandler.Handle(ex);
+            }
+        }
+
+        /// <summary>
+        /// 发送报文至指定的客户端
+        /// </summary>
+        /// <param name="tcpClient">客户端</param>
+        /// <param name="datagram">报文</param>
+        public void SyncSend(TcpClient tcpClient, string datagram)
+        {
+            SyncSend(tcpClient, this.Encoding.GetBytes(datagram));
+        }
+
+        /// <summary>
+        /// 发送报文至所有客户端
+        /// </summary>
+        /// <param name="datagram">报文</param>
+        public void SyncSendToAll(byte[] datagram)
+        {
+            GuardRunning();
+
+            //foreach (var client in clients.Values)
+            //{
+              //  SyncSend(client.TcpClient, datagram);
+            //}
+        }
+
+        /// <summary>
+        /// 发送报文至所有客户端
+        /// </summary>
+        /// <param name="datagram">报文</param>
+        public void SyncSendToAll(string datagram)
+        {
+            GuardRunning();
+
+            SyncSendToAll(this.Encoding.GetBytes(datagram));
+        }
+
+        #endregion
         #region IDisposable Members
 
         /// <summary>
-        /// Performs application-defined tasks associated with freeing, 
-        /// releasing, or resetting unmanaged resources.
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         public void Dispose()
         {
@@ -307,9 +397,8 @@ namespace AsyTcpServer
         /// <summary>
         /// Releases unmanaged and - optionally - managed resources
         /// </summary>
-        /// <param name="disposing"><c>true</c> to release 
-        /// both managed and unmanaged resources; <c>false</c> 
-        /// to release only unmanaged resources.</param>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; 
+        /// <c>false</c> to release only unmanaged resources.</param>
         protected virtual void Dispose(bool disposing)
         {
             if (!this.disposed)
@@ -327,7 +416,7 @@ namespace AsyTcpServer
                     }
                     catch (SocketException ex)
                     {
-                        ExceptionHandler.Handle(ex);
+                       // ExceptionHandler.Handle(ex);
                     }
                 }
 
