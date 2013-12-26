@@ -41,7 +41,7 @@ namespace ServerDLL
                 }
                
 
-               bool Transmission_success = write_pic_server.Connection_write("192.168.1.100", "8888", fileBytes);
+               bool Transmission_success = write_pic_server.Connection_write("127.0.0.1", "8888", fileBytes);
                if (Transmission_success)
                {
                    MessageBox.Show("传输图片成功");

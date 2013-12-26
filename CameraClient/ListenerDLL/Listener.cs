@@ -13,10 +13,10 @@ namespace ListenerDLL
         //全局TcpClient
         static TcpClient client;
         //文件流建立到磁盘上的读写流
-        static Guid tempCartId = Guid.NewGuid();
-        static FileStream fs = new FileStream(Application.StartupPath + "\\" + tempCartId + ".jpg", FileMode.Create);
+      
+        static FileStream fs;
         //buffer
-        static int bufferlength = 10240;
+        static int bufferlength = 200;
         static byte[] buffer = new byte[bufferlength];
         //网络流
         static NetworkStream ns;
@@ -30,19 +30,20 @@ namespace ListenerDLL
             listener.Start();
             while (true)
             {
+               
                 Console.WriteLine("等待连接");
                 //线程会挂在这里，直到客户端发来连接请求
                 client = listener.AcceptTcpClient();
                 Console.WriteLine("已经连接");
                 //得到从客户端传来的网络流
                 ns = client.GetStream();
-                
+                 Guid tempCartId = Guid.NewGuid();
+                fs = new FileStream(Application.StartupPath + "\\" + tempCartId + ".jpg", FileMode.Create);
                 //如果网络流中有数据
-             //   if (ns.DataAvailable)
-               // {
+              if (ns.DataAvailable)
+                {
+
                   
-                       Guid tempCartId = Guid.NewGuid();
-                          fs = new FileStream(Application.StartupPath + "\\" + tempCartId + ".jpg", FileMode.Create);
                     
                     /*同步读取网络流中的byte信息
                     do
@@ -54,7 +55,7 @@ namespace ListenerDLL
                      */
                     //异步读取网络流中的byte信息
                     ns.BeginRead(buffer, 0, bufferlength, ReadAsyncCallBack, null);
-              //  }
+                }
             }
         }
 
