@@ -12,16 +12,13 @@ namespace ListenerDLL
     {
         //全局TcpClient
         static TcpClient client;
-        //文件流建立到磁盘上的读写流
-      
+        //文件流建立到磁盘上的读写流    
         static FileStream fs;
         //buffer
         static int bufferlength = 200;
         static byte[] buffer = new byte[bufferlength];
         //网络流
         static NetworkStream ns;
-        
-
         public static void ConnectAndListen()
         {
             //服务端监听任何IP 但是端口号是8888的连接
