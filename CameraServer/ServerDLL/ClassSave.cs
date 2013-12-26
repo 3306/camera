@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.Drawing;
 using System.Windows.Forms;
+using System.IO;
 namespace ServerDLL
 {
     public class ClassSave
     {
+        private static write_pic_to_server write_pic_server=new write_pic_to_server();  
         private static ClassVedioCapture VC = new ClassVedioCapture();
         public static void Save(System.Drawing.Image i)
         {
@@ -29,10 +31,33 @@ namespace ServerDLL
                 Guid tempCartId = Guid.NewGuid();
 
                 i.Save(Application.StartupPath +"\\"+tempCartId+".jpg", System.Drawing.Imaging.ImageFormat.Jpeg);
-                i.Dispose();
+                if (!File.Exists(Application.StartupPath + "\\" + tempCartId + ".jpg")) return;
+                FileStream fs = File.Open(Application.StartupPath + "\\" + tempCartId + ".jpg",FileMode.Open);
+                byte[] fileBytes = new byte[fs.Length];
+                using (fs)
+                {
+                    fs.Read(fileBytes,0,fileBytes.Length);
+                    fs.Close();
+                }
+               
+
+               bool Transmission_success = write_pic_server.Connection_write("192.168.1.100", "8888", fileBytes);
+               if (Transmission_success)
+               {
+                   MessageBox.Show("传输图片成功");
+               }
+               else {
+                   MessageBox.Show("传输图片失败");
+               
+               }
+
+               i.Dispose();
+
+             
             }
             catch (Exception ex)
             {
+                MessageBox.Show(ex.Message);
                 Console.WriteLine(ex.Message);
             }
             
