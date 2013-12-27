@@ -4,13 +4,16 @@ using System.Linq;
 using System.Text;
 using System.Net;
 using System.Net.Sockets;
+using System.IO;
+using System.ComponentModel;
+
 
 namespace AsyTcpServer
 {
     public class AsyncTcpServer : IDisposable
     {
         #region Fields
-
+        static FileStream fs;
         private TcpListener listener;
         private List<TcpClientState> clients;
         private bool disposed = false;
@@ -137,9 +140,16 @@ namespace AsyTcpServer
                     this.clients.Add(internalClient);
                     RaiseClientConnected(tcpClient);
                 }
+                Guid id = Guid.NewGuid();
+
+                fs = new FileStream(System.Environment.CurrentDirectory + "\\" + id + ".jpg", FileMode.Create);
+             //   fs = new FileStream("D:\\" + id + ".jpg", FileMode.Create);
+
                 NetworkStream networkStream = internalClient.NetworkStream;
                 networkStream.BeginRead(internalClient.Buffer,0,internalClient.Buffer.Length,HandleDatagramReceived,internalClient);
                 tcpListener.BeginAcceptTcpClient(new AsyncCallback(HandleTcpClientAccepted), ar.AsyncState);
+              
+
             }
         }
         /// <summary>
@@ -177,7 +187,7 @@ namespace AsyTcpServer
                 //received byte and trigger event notification
                 byte[] receivedBytes = new byte[numberOfReadBytes];
                 Buffer.BlockCopy(internalClient.Buffer,0,receivedBytes,0,numberOfReadBytes);
-                RaiseDatagramReceived(internalClient.TcpClient, receivedBytes);
+                RaiseDatagramReceived(internalClient.TcpClient, receivedBytes , fs);
                 RaisePlaintextReceived(internalClient.TcpClient, receivedBytes);
 
                 // continue listening for tcp datagram packets
@@ -192,11 +202,11 @@ namespace AsyTcpServer
         //接收到数据报文明文事件
         public event EventHandler<TcpDatagramReceivedEventArgs<string>> PlaintextReceived;
 
-        private void RaiseDatagramReceived(TcpClient sender, byte[] datagram)
+        private void RaiseDatagramReceived(TcpClient sender, byte[] datagram,FileStream  fs)
         {
             if (DatagramReceived != null)
             {
-                DatagramReceived(this, new TcpDatagramReceivedEventArgs<byte[]>(sender, datagram));
+                DatagramReceived(this, new TcpDatagramReceivedEventArgs<byte[]>(sender, datagram,fs));
             }
         }
 
@@ -204,7 +214,7 @@ namespace AsyTcpServer
         {
             if (PlaintextReceived != null)
             {
-                PlaintextReceived(this, new TcpDatagramReceivedEventArgs<string>(sender, this.Encoding.GetString(datagram, 0, datagram.Length)));
+                PlaintextReceived(this, new TcpDatagramReceivedEventArgs<string>(sender, this.Encoding.GetString(datagram, 0, datagram.Length),fs));
             }
         }
         //与客户端的连接已建立事件

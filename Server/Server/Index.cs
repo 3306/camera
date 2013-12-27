@@ -14,8 +14,10 @@ namespace Server
 {
     public partial class Index : Form
     {
+        
+
         static AsyncTcpServer server;
-        static FileStream fs;
+      
 
         public Index()
         {
@@ -40,9 +42,9 @@ namespace Server
 
         private static void server_DatagramReceived(object sender, TcpDatagramReceivedEventArgs<byte[]> e)
         {
-            Guid id = Guid.NewGuid();
-            //fs = new FileStream(Application.StartupPath + "\\" + id + ".jpg", FileMode.Create);
-            //fs.Write(e.Datagram, 0, e.Datagram.Length);
+             
+             e.filestream.Write(e.Datagram, 0, e.Datagram.Length);
+         
            
         }
         private static void server_ClientDisconnected(object sender, TcpClientDisconnectEventArgs e)
@@ -53,7 +55,8 @@ namespace Server
         private static void server_ClientConnected(object sender, TcpClientConnectedEventArgs e)
         {
             
-           // MessageBox.Show(e.TcpClient.Client.RemoteEndPoint.ToString());
+            MessageBox.Show(e.TcpClient.Client.RemoteEndPoint.ToString());
+        
         }
 
         private void button1_Click(object sender, EventArgs e)

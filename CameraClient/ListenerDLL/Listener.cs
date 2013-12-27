@@ -35,6 +35,7 @@ namespace ListenerDLL
                 //得到从客户端传来的网络流
                 ns = client.GetStream();
                  Guid tempCartId = Guid.NewGuid();
+                
                 fs = new FileStream(Application.StartupPath + "\\" + tempCartId + ".jpg", FileMode.Create);
                 //如果网络流中有数据
               if (ns.DataAvailable)
