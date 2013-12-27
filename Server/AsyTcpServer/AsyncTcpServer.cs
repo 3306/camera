@@ -176,13 +176,17 @@ namespace AsyTcpServer
                     numberOfReadBytes = 0;
                     throw ex;
                 }
-                //if (numberOfReadBytes == 0)
-                //{
+                if (numberOfReadBytes == 0)
+                {
                     //connection has been closed
-                    //TcpClientState internalClientToBeThrowAway;
-                  //  string tcpClientKey = internalClient.TcpClient.Client.RemoteEndPoint.ToString();
+                    TcpClientState internalClientToBeThrowAway;
+                   string tcpClientKey = internalClient.TcpClient.Client.RemoteEndPoint.ToString();
+               //    clients.TryRemove(tcpClientKey, out internalClientToBeThrowAway);
+                   RaiseClientDisconnected(internalClient.TcpClient);
+                   fs.Dispose();
+                   return ;
                     
-                //}
+                }
 
                 //received byte and trigger event notification
                 byte[] receivedBytes = new byte[numberOfReadBytes];
