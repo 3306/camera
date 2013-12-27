@@ -32,17 +32,18 @@ namespace Server
             Console.WriteLine("TCP server has been started");
             Console.WriteLine("Type something to send to client");
             
-            while (true)
-            {
-                Guid id = Guid.NewGuid();
-               // fs = new FileStream(Application.StartupPath + "\\" + id + ".jpg", FileMode.Create);
-            }
+            //while (true)
+            //{
+                
+            //}
         }
 
         private static void server_DatagramReceived(object sender, TcpDatagramReceivedEventArgs<byte[]> e)
         {
-            //fs.Write(e.Datagram,0,e.TcpClient.);
-            MessageBox.Show("!!!");
+            Guid id = Guid.NewGuid();
+            fs = new FileStream(Application.StartupPath + "\\" + id + ".jpg", FileMode.Create);
+            fs.Write(e.Datagram, 0, e.Datagram.Length);
+           
         }
         private static void server_ClientDisconnected(object sender, TcpClientDisconnectEventArgs e)
         {

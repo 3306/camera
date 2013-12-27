@@ -148,7 +148,7 @@ namespace AsyTcpServer
         /// <param name="ar"></param>
         private void HandleDatagramReceived(IAsyncResult ar)
         {
-            if (IsRunning) return;
+            if (!IsRunning) return;
            
             
                 TcpClientState internalClient = (TcpClientState)ar.AsyncState;
