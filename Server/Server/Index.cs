@@ -43,19 +43,20 @@ namespace Server
         private static void server_DatagramReceived(object sender, TcpDatagramReceivedEventArgs<byte[]> e)
         {
              
-             e.filestream.Write(e.Datagram, 0, e.Datagram.Length);
-         
+             
+             
+                
            
         }
         private static void server_ClientDisconnected(object sender, TcpClientDisconnectEventArgs e)
         {
-            MessageBox.Show(e.TcpClient.Client.RemoteEndPoint.ToString());
+            //MessageBox.Show(e.TcpClient.Client.RemoteEndPoint.ToString());
         }
 
         private static void server_ClientConnected(object sender, TcpClientConnectedEventArgs e)
         {
             
-            MessageBox.Show(e.TcpClient.Client.RemoteEndPoint.ToString());
+            //MessageBox.Show(e.TcpClient.Client.RemoteEndPoint.ToString());
         
         }
 

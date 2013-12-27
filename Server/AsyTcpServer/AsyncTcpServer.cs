@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 using System.Text;
 using System.Net;
 using System.Net.Sockets;
 using System.IO;
 using System.ComponentModel;
+using System.Threading;
 
 
 namespace AsyTcpServer
@@ -13,11 +15,11 @@ namespace AsyTcpServer
     public class AsyncTcpServer : IDisposable
     {
         #region Fields
-        static FileStream fs;
+      
         private TcpListener listener;
-        private List<TcpClientState> clients;
+        private ConcurrentDictionary<string,TcpClientState> clients;
         private bool disposed = false;
-
+        
         #endregion
 
         #region Properties
@@ -39,6 +41,20 @@ namespace AsyTcpServer
         /// </summary>
         public Encoding Encoding { get; set; }
 
+        private class AsyncState
+        {
+            public int WriteCountOnce { get; set; }
+
+            public int Offset { get; set; }
+
+            public byte[] Buffer { get; set; }
+
+            public ManualResetEvent WaitHandle { get; set; }
+
+            public FileStream FS { get; set; }
+
+            public TcpClientState InternalClient { get; set; }
+        }
         #endregion
 
         #region Ctors
@@ -66,7 +82,7 @@ namespace AsyTcpServer
             Port = listenPort;
             this.Encoding = Encoding.Default;
 
-            clients = new List<TcpClientState>();
+            clients = new ConcurrentDictionary<string, TcpClientState>();
 
             listener = new TcpListener(Address, Port);
             listener.AllowNatTraversal(true);
@@ -102,20 +118,29 @@ namespace AsyTcpServer
          }
         public AsyncTcpServer Stop()
         {
-            if(IsRunning)
+            if (!IsRunning) return this;
+
+            try
             {
-                IsRunning = false;
                 listener.Stop();
 
-                lock(this.clients)
+                foreach (var client in clients.Values)
                 {
-                    for(int i = 0;i<this.clients.Count;i++)
-                    {
-                        this.clients[i].TcpClient.Client.Disconnect(false);
-                    }
-                    this.clients.Clear();
+                    client.TcpClient.Client.Disconnect(false);
                 }
+                clients.Clear();
             }
+            catch (ObjectDisposedException ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+            catch (SocketException ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+
+            IsRunning = false;
+
             return this;
         }
 
@@ -128,29 +153,128 @@ namespace AsyTcpServer
         /// <param name="ar"></param>
         private void HandleTcpClientAccepted(IAsyncResult ar)
         {
-            if (IsRunning)
+            
+            if (!IsRunning) return;
+            TcpListener tcpListener = (TcpListener)ar.AsyncState;
+            TcpClient tcpClient = tcpListener.EndAcceptTcpClient(ar);
+            if (!tcpClient.Connected) return;
+
+            Guid id = Guid.NewGuid();
+            FileStream fs = new FileStream(System.Environment.CurrentDirectory + "\\" + id + ".jpg", FileMode.Create);
+
+            byte[] buffer = new byte[tcpClient.ReceiveBufferSize];
+            TcpClientState internalClient = new TcpClientState(tcpClient, buffer,fs);
+
+            //add client connection to cache
+            string tcpClientKey = internalClient.TcpClient.Client.RemoteEndPoint.ToString();
+            clients.AddOrUpdate(tcpClientKey, internalClient, (n, o) => { return internalClient; });
+            RaiseClientConnected(tcpClient);
+
+            
+
+
+            
+         
+
+            //begin to read data
+            NetworkStream networkStream = internalClient.NetworkStream;
+            ContinueReadBuffer(internalClient, networkStream);
+
+
+            //keep listening to accept next connection
+            ContinueAcceptTcpClient(tcpListener);
+            
+        }
+
+        private void ContinueAcceptTcpClient(TcpListener tcpListener)
+        {
+            try
             {
-                TcpListener tcpListener = (TcpListener)ar.AsyncState;
-                TcpClient tcpClient = tcpListener.EndAcceptTcpClient(ar);
-                byte[] buffer = new byte[tcpClient.ReceiveBufferSize];
+                tcpListener.BeginAcceptTcpClient(new AsyncCallback(HandleTcpClientAccepted), tcpListener);
+            }
+            catch (ObjectDisposedException ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+            catch (SocketException ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+        }
 
-                TcpClientState internalClient = new TcpClientState(tcpClient, buffer);
-                lock (this.clients)
-                {
-                    this.clients.Add(internalClient);
-                    RaiseClientConnected(tcpClient);
-                }
-                Guid id = Guid.NewGuid();
 
-                fs = new FileStream(System.Environment.CurrentDirectory + "\\" + id + ".jpg", FileMode.Create);
-             //   fs = new FileStream("D:\\" + id + ".jpg", FileMode.Create);
+        private void ContinueReadBuffer(TcpClientState internalClient, NetworkStream networkStream)
+        {
+            /*
+            //创建文件流
+            string filePath = 
+            using (var fs = new FileStream(filePath, ))
+            {
+                int offset = 0;
+                AsyncState state = new AsyncState
+            {
+                WriteCountOnce = internalClient.Buffer.Length,
+                Offset = offset,
+                Buffer = internalClient.Buffer,
+                WaitHandle = new ManualResetEvent(false),
+                FS = fs,
+                InternalClient = internalClient
+            };}
+                //fs.BeginWrite(internalClient.Buffer, offset, internalClient.Buffer.Length, HandleNewPic, state);
+           */
+            try
+            {
 
-                NetworkStream networkStream = internalClient.NetworkStream;
-                networkStream.BeginRead(internalClient.Buffer,0,internalClient.Buffer.Length,HandleDatagramReceived,internalClient);
-                tcpListener.BeginAcceptTcpClient(new AsyncCallback(HandleTcpClientAccepted), ar.AsyncState);
-              
+
+                networkStream.BeginRead(internalClient.Buffer, 0, internalClient.Buffer.Length, HandleDatagramReceived, internalClient);
+                
+           
+            }
+            catch (ObjectDisposedException ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+            
+        }
+
+        private void HandleNewPic(IAsyncResult ar)
+        {
+            if (!IsRunning) return;
+
+            AsyncState state = (AsyncState)ar.AsyncState;
+            //int numberOfByte = 0;
+            try
+            {
+                //numberOfByte = state.InternalClient.NetworkStream.EndRead(ar);
+                state.FS.EndWrite(ar);
+            }
+            catch (Exception e)
+            {
+               // numberOfByte = 0;
+                Console.WriteLine(e.ToString());
+                return;
+            }
+            /*if (numberOfByte == 0)
+            {
+                
+                TcpClientState internalClientToBeThrowAway;
+                string tcpClientKey = state.InternalClient.TcpClient.Client.RemoteEndPoint.ToString();
+                clients.TryRemove(tcpClientKey, out internalClientToBeThrowAway);
+                RaiseClientDisconnected(state.InternalClient.TcpClient);
+                state.FS.Dispose();
+                return;
 
             }
+            else
+            {
+               
+                state.Offset += state.WriteCountOnce;
+                state.FS.BeginWrite(state.Buffer, state.Offset, state.WriteCountOnce, HandleNewPic, state);
+            }
+
+            */
+  
+
         }
         /// <summary>
         /// 
@@ -159,11 +283,11 @@ namespace AsyTcpServer
         private void HandleDatagramReceived(IAsyncResult ar)
         {
             if (!IsRunning) return;
-           
-            
+                
+                
                 TcpClientState internalClient = (TcpClientState)ar.AsyncState;
                 if (!internalClient.TcpClient.Connected) return;
-
+                
                 NetworkStream networStream = internalClient.NetworkStream;
                 int numberOfReadBytes = 0;
                 try
@@ -179,19 +303,20 @@ namespace AsyTcpServer
                 if (numberOfReadBytes == 0)
                 {
                     //connection has been closed
-                    TcpClientState internalClientToBeThrowAway;
+                   TcpClientState internalClientToBeThrowAway;
                    string tcpClientKey = internalClient.TcpClient.Client.RemoteEndPoint.ToString();
-               //    clients.TryRemove(tcpClientKey, out internalClientToBeThrowAway);
+                   clients.TryRemove(tcpClientKey, out internalClientToBeThrowAway);
                    RaiseClientDisconnected(internalClient.TcpClient);
-                   fs.Dispose();
+                   internalClient.FileStream.Dispose();
                    return ;
                     
                 }
-
+               
                 //received byte and trigger event notification
                 byte[] receivedBytes = new byte[numberOfReadBytes];
                 Buffer.BlockCopy(internalClient.Buffer,0,receivedBytes,0,numberOfReadBytes);
-                RaiseDatagramReceived(internalClient.TcpClient, receivedBytes , fs);
+                internalClient.FileStream.Write(internalClient.Buffer,0,internalClient.Buffer.Length);
+                RaiseDatagramReceived(internalClient.TcpClient, receivedBytes);
                 RaisePlaintextReceived(internalClient.TcpClient, receivedBytes);
 
                 // continue listening for tcp datagram packets
@@ -206,11 +331,11 @@ namespace AsyTcpServer
         //接收到数据报文明文事件
         public event EventHandler<TcpDatagramReceivedEventArgs<string>> PlaintextReceived;
 
-        private void RaiseDatagramReceived(TcpClient sender, byte[] datagram,FileStream  fs)
+        private void RaiseDatagramReceived(TcpClient sender, byte[] datagram)
         {
             if (DatagramReceived != null)
             {
-                DatagramReceived(this, new TcpDatagramReceivedEventArgs<byte[]>(sender, datagram,fs));
+                DatagramReceived(this, new TcpDatagramReceivedEventArgs<byte[]>(sender, datagram));
             }
         }
 
@@ -218,7 +343,7 @@ namespace AsyTcpServer
         {
             if (PlaintextReceived != null)
             {
-                PlaintextReceived(this, new TcpDatagramReceivedEventArgs<string>(sender, this.Encoding.GetString(datagram, 0, datagram.Length),fs));
+                PlaintextReceived(this, new TcpDatagramReceivedEventArgs<string>(sender, this.Encoding.GetString(datagram, 0, datagram.Length)));
             }
         }
         //与客户端的连接已建立事件
@@ -454,15 +579,18 @@ namespace AsyTcpServer
     /// </summary>
     /// <param name="tcpClient">The TCP client</param>
     /// <param name="buffer">The byte array buffer</param>
-    public TcpClientState(TcpClient tcpClient, byte[] buffer)
+    public TcpClientState(TcpClient tcpClient, byte[] buffer,FileStream fs)
     {
       if (tcpClient == null)
         throw new ArgumentNullException("tcpClient");
       if (buffer == null)
         throw new ArgumentNullException("buffer");
+      if (fs == null)
+          throw new ArgumentNullException("fs");
 
       this.TcpClient = tcpClient;
       this.Buffer = buffer;
+      this.FileStream = fs;
     }
 
     /// <summary>
@@ -481,6 +609,11 @@ namespace AsyTcpServer
     public NetworkStream NetworkStream
     {
       get { return TcpClient.GetStream(); }
+    }
+    public FileStream FileStream
+    {
+        get;
+        private set;
     }
   }
 }
