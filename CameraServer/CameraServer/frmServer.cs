@@ -38,13 +38,13 @@ namespace CameraServer
         private void tSave_Tick(object sender, EventArgs e)
         {
             VC.CopyToClipBorad();
-            ClassSave.Save(VC.getCaptureImage());
+            Save_send_countPeople.Save(VC.getCaptureImage());
         }
 
         private void btnSave_Click(object sender, EventArgs e)
         {
             VC.CopyToClipBorad();
-            ClassSave.Save(VC.getCaptureImage());
+            Save_send_countPeople.Save(VC.getCaptureImage());
         }
 
         private void btnBeginListen_Click(object sender, EventArgs e)
