@@ -35,11 +35,11 @@ namespace ServerDLL
                 if (!File.Exists(Application.StartupPath + "\\" + tempCartId + ".jpg")) return;
                 //测试检测人头数
                 string ImageURL = "C:\\2.jpg";
-                MessageBox.Show(face_detection.HeadCounting(ImageURL).ToString());
+      //          MessageBox.Show(face_detection.HeadCounting(ImageURL).ToString());
 
                 //检测图片中的人头数
                 double  Head_sum = face_detection.HeadCounting(Application.StartupPath + "\\" + tempCartId + ".jpg");
-                MessageBox.Show(Head_sum.ToString());
+         //       MessageBox.Show(Head_sum.ToString());
                 FileStream fs = File.Open(Application.StartupPath + "\\" + tempCartId + ".jpg",FileMode.Open);
                 byte[] fileBytes = new byte[fs.Length];
                 using (fs)
@@ -52,10 +52,10 @@ namespace ServerDLL
                bool Transmission_success = write_pic_server.Connection_write("127.0.0.1", "8888", fileBytes);
                if (Transmission_success)
                {
-                   MessageBox.Show("传输图片成功");
+                 //  MessageBox.Show("传输图片成功");
                }
                else {
-                   MessageBox.Show("传输图片失败");
+               //    MessageBox.Show("传输图片失败");
                
                }
 
