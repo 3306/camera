@@ -148,10 +148,11 @@ namespace AsyTcpServer
             TcpClient tcpClient = tcpListener.EndAcceptTcpClient(ar);
             if (!tcpClient.Connected) return;
             //创建文件流
-            Guid id = Guid.NewGuid();
+            DateTime timeID = DateTime .Now;
+            string id = timeID.ToString().Replace("/","-").Replace(":","-");
             string FilePath = System.Environment.CurrentDirectory + "\\pic\\";
             string ChildDir = tcpClient.Client.RemoteEndPoint.ToString();
-            ChildDir = ChildDir.Replace(".", "").Replace(":", "").Substring(0, ChildDir.Length - 8);
+            ChildDir = ChildDir.Replace(".", "-").Replace(":", "").Substring(0, ChildDir.Length - 5);
             FilePath = FilePath +ChildDir+ Path.DirectorySeparatorChar;
             if (!Directory.Exists(FilePath))
             {
