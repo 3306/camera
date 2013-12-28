@@ -21,7 +21,7 @@ namespace ServerDLL
 
 
             int port = 0;
-            IPAddress myIP = IPAddress.Parse("127.0.0.1");
+            IPAddress myIP = IPAddress.Parse("192.168.1.100");
             client = new TcpClient();
             try
             {

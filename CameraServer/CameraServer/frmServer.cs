@@ -37,14 +37,17 @@ namespace CameraServer
 
         private void tSave_Tick(object sender, EventArgs e)
         {
-            VC.CopyToClipBorad();
-            Save_send_countPeople.Save(VC.getCaptureImage());
+            Save();
         }
-
-        private void btnSave_Click(object sender, EventArgs e)
+        private void Save()
         {
             VC.CopyToClipBorad();
             Save_send_countPeople.Save(VC.getCaptureImage());
+        }
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            //this.tSave.Enabled = true;
+            Save();
         }
 
         private void btnBeginListen_Click(object sender, EventArgs e)
