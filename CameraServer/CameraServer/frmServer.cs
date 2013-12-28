@@ -22,6 +22,7 @@ namespace CameraServer
             this.tSave.Enabled = false;
             Application.Exit();
         }
+        
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -33,6 +34,7 @@ namespace CameraServer
             {
                 MessageBox.Show(ex.Message);
             }
+            
         }
 
         private void tSave_Tick(object sender, EventArgs e)

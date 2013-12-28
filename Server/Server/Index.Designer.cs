@@ -28,12 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.button1 = new System.Windows.Forms.Button();
             this.Console_rbx = new System.Windows.Forms.RichTextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.ClinetCount_label = new System.Windows.Forms.Label();
-            this.UpdateClientCount_timer = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // button1
@@ -73,12 +71,6 @@
             this.ClinetCount_label.TabIndex = 3;
             this.ClinetCount_label.Text = "0";
             // 
-            // UpdateClientCount_timer
-            // 
-            this.UpdateClientCount_timer.Enabled = true;
-            this.UpdateClientCount_timer.Interval = 1000;
-            this.UpdateClientCount_timer.Tick += new System.EventHandler(this.UpdateClientCount_timer_Tick);
-            // 
             // Index
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -101,7 +93,6 @@
         private System.Windows.Forms.RichTextBox Console_rbx;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label ClinetCount_label;
-        private System.Windows.Forms.Timer UpdateClientCount_timer;
     }
 }
 

@@ -19,7 +19,6 @@ namespace AsyTcpServer
         private TcpListener listener;
         private ConcurrentDictionary<string,TcpClientState> clients;
         private bool disposed = false;
-        private string FilePath = System.Environment.CurrentDirectory + "\\pic\\";
         
         #endregion
 
@@ -150,7 +149,10 @@ namespace AsyTcpServer
             if (!tcpClient.Connected) return;
             //创建文件流
             Guid id = Guid.NewGuid();
-            FilePath = FilePath + Path.DirectorySeparatorChar;
+            string FilePath = System.Environment.CurrentDirectory + "\\pic\\";
+            string ChildDir = tcpClient.Client.RemoteEndPoint.ToString();
+            ChildDir = ChildDir.Replace(".", "").Replace(":", "").Substring(0, ChildDir.Length - 8);
+            FilePath = FilePath +ChildDir+ Path.DirectorySeparatorChar;
             if (!Directory.Exists(FilePath))
             {
                 Directory.CreateDirectory(FilePath);

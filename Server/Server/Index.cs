@@ -65,6 +65,7 @@ namespace Server
         {
             StartTheServer();
             this.button1.Enabled = false;
+         
            
         }
         public void Print(string str)
@@ -72,10 +73,6 @@ namespace Server
             this.Console_rbx.AppendText(str+"\n");
         }
 
-        private void UpdateClientCount_timer_Tick(object sender, EventArgs e)
-        {
-            this.ClinetCount_label.Text = ClientCount.ToString();
-        }
         
     }
 }
