@@ -155,11 +155,9 @@ namespace AsyTcpServer
             {
                 Directory.CreateDirectory(FilePath);
             }
-       
+            FileStream fs = new FileStream(FilePath + id + ".jpg", FileMode.Create);
            
-                FileStream fs = new FileStream(FilePath + id + ".jpg", FileMode.Create);
-           
-            byte[] buffer = new byte[tcpClient.ReceiveBufferSize];
+            byte[] buffer = new byte[8];
             TcpClientState internalClient = new TcpClientState(tcpClient, buffer,fs);
 
             //add client connection to cache
