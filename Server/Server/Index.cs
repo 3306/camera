@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using AsyTcpServer;
 using System.Net.Sockets;
 using System.IO;
+using System.Threading;
 
 namespace Server
 {
@@ -23,7 +24,8 @@ namespace Server
         {
             InitializeComponent();
         }
-        static void StartTheServer()
+        private int ClientCount = 0;
+         private void StartTheServer()
         {
             server = new AsyncTcpServer(8888);
             server.Encoding = Encoding.UTF8;
@@ -31,16 +33,16 @@ namespace Server
             server.ClientDisconnected += new EventHandler<TcpClientDisconnectEventArgs>(server_ClientDisconnected);
             server.DatagramReceived += new EventHandler<TcpDatagramReceivedEventArgs<byte[]>>(server_DatagramReceived);
             server.Start();
-            Console.WriteLine("TCP server has been started");
-            Console.WriteLine("Type something to send to client");
-            
+            ClientCount = 0;
+            Print("服务器已启动");
             //while (true)
             //{
                 
             //}
+            
         }
 
-        private static void server_DatagramReceived(object sender, TcpDatagramReceivedEventArgs<byte[]> e)
+        private  void server_DatagramReceived(object sender, TcpDatagramReceivedEventArgs<byte[]> e)
         {
              
              
@@ -48,24 +50,32 @@ namespace Server
                 
            
         }
-        private static void server_ClientDisconnected(object sender, TcpClientDisconnectEventArgs e)
+        private  void server_ClientDisconnected(object sender, TcpClientDisconnectEventArgs e)
         {
-            //MessageBox.Show(e.TcpClient.Client.RemoteEndPoint.ToString());
+            ClientCount--;
+          
         }
 
-        private static void server_ClientConnected(object sender, TcpClientConnectedEventArgs e)
+        private  void server_ClientConnected(object sender, TcpClientConnectedEventArgs e)
         {
-            
-            //MessageBox.Show(e.TcpClient.Client.RemoteEndPoint.ToString());
-        
+            ClientCount++;
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             StartTheServer();
+            
            
         }
+        public void Print(string str)
+        {
+            this.Console_rbx.AppendText(str+"\n");
+        }
 
+        private void UpdateClientCount_timer_Tick(object sender, EventArgs e)
+        {
+            this.ClinetCount_label.Text = ClientCount.ToString();
+        }
         
     }
 }

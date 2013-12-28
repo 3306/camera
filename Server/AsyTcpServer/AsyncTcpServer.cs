@@ -19,6 +19,7 @@ namespace AsyTcpServer
         private TcpListener listener;
         private ConcurrentDictionary<string,TcpClientState> clients;
         private bool disposed = false;
+        private string FilePath = System.Environment.CurrentDirectory + "\\pic\\";
         
         #endregion
 
@@ -41,20 +42,7 @@ namespace AsyTcpServer
         /// </summary>
         public Encoding Encoding { get; set; }
 
-        private class AsyncState
-        {
-            public int WriteCountOnce { get; set; }
-
-            public int Offset { get; set; }
-
-            public byte[] Buffer { get; set; }
-
-            public ManualResetEvent WaitHandle { get; set; }
-
-            public FileStream FS { get; set; }
-
-            public TcpClientState InternalClient { get; set; }
-        }
+        public int ClientCount { get; private set; }
         #endregion
 
         #region Ctors
@@ -95,6 +83,7 @@ namespace AsyTcpServer
             if (!IsRunning)
             {
                 IsRunning = true;
+                ClientCount = 0;
                 listener.Start();
                 listener.BeginAcceptTcpClient(
                     new AsyncCallback(HandleTcpClientAccepted),listener);
@@ -110,7 +99,8 @@ namespace AsyTcpServer
          {
              if(!IsRunning)
              {
-                 IsRunning = true;
+                 IsRunning = true; 
+                 ClientCount = 0;
                  listener.Start(backlog);
                  listener.BeginAcceptTcpClient(new AsyncCallback(HandleTcpClientAccepted),listener);
              }
@@ -158,10 +148,17 @@ namespace AsyTcpServer
             TcpListener tcpListener = (TcpListener)ar.AsyncState;
             TcpClient tcpClient = tcpListener.EndAcceptTcpClient(ar);
             if (!tcpClient.Connected) return;
-
+            //创建文件流
             Guid id = Guid.NewGuid();
-            FileStream fs = new FileStream(System.Environment.CurrentDirectory + "\\" + id + ".jpg", FileMode.Create);
-
+            FilePath = FilePath + Path.DirectorySeparatorChar;
+            if (!Directory.Exists(FilePath))
+            {
+                Directory.CreateDirectory(FilePath);
+            }
+       
+           
+                FileStream fs = new FileStream(FilePath + id + ".jpg", FileMode.Create);
+           
             byte[] buffer = new byte[tcpClient.ReceiveBufferSize];
             TcpClientState internalClient = new TcpClientState(tcpClient, buffer,fs);
 
@@ -169,12 +166,6 @@ namespace AsyTcpServer
             string tcpClientKey = internalClient.TcpClient.Client.RemoteEndPoint.ToString();
             clients.AddOrUpdate(tcpClientKey, internalClient, (n, o) => { return internalClient; });
             RaiseClientConnected(tcpClient);
-
-            
-
-
-            
-         
 
             //begin to read data
             NetworkStream networkStream = internalClient.NetworkStream;
@@ -185,7 +176,6 @@ namespace AsyTcpServer
             ContinueAcceptTcpClient(tcpListener);
             
         }
-
         private void ContinueAcceptTcpClient(TcpListener tcpListener)
         {
             try
@@ -201,80 +191,16 @@ namespace AsyTcpServer
                 Console.WriteLine(ex.ToString());
             }
         }
-
-
         private void ContinueReadBuffer(TcpClientState internalClient, NetworkStream networkStream)
         {
-            /*
-            //创建文件流
-            string filePath = 
-            using (var fs = new FileStream(filePath, ))
-            {
-                int offset = 0;
-                AsyncState state = new AsyncState
-            {
-                WriteCountOnce = internalClient.Buffer.Length,
-                Offset = offset,
-                Buffer = internalClient.Buffer,
-                WaitHandle = new ManualResetEvent(false),
-                FS = fs,
-                InternalClient = internalClient
-            };}
-                //fs.BeginWrite(internalClient.Buffer, offset, internalClient.Buffer.Length, HandleNewPic, state);
-           */
             try
             {
-
-
-                networkStream.BeginRead(internalClient.Buffer, 0, internalClient.Buffer.Length, HandleDatagramReceived, internalClient);
-                
-           
+                networkStream.BeginRead(internalClient.Buffer, 0, internalClient.Buffer.Length, HandleDatagramReceived, internalClient);                 
             }
             catch (ObjectDisposedException ex)
             {
                 Console.WriteLine(ex.ToString());
-            }
-            
-        }
-
-        private void HandleNewPic(IAsyncResult ar)
-        {
-            if (!IsRunning) return;
-
-            AsyncState state = (AsyncState)ar.AsyncState;
-            //int numberOfByte = 0;
-            try
-            {
-                //numberOfByte = state.InternalClient.NetworkStream.EndRead(ar);
-                state.FS.EndWrite(ar);
-            }
-            catch (Exception e)
-            {
-               // numberOfByte = 0;
-                Console.WriteLine(e.ToString());
-                return;
-            }
-            /*if (numberOfByte == 0)
-            {
-                
-                TcpClientState internalClientToBeThrowAway;
-                string tcpClientKey = state.InternalClient.TcpClient.Client.RemoteEndPoint.ToString();
-                clients.TryRemove(tcpClientKey, out internalClientToBeThrowAway);
-                RaiseClientDisconnected(state.InternalClient.TcpClient);
-                state.FS.Dispose();
-                return;
-
-            }
-            else
-            {
-               
-                state.Offset += state.WriteCountOnce;
-                state.FS.BeginWrite(state.Buffer, state.Offset, state.WriteCountOnce, HandleNewPic, state);
-            }
-
-            */
-  
-
+            }            
         }
         /// <summary>
         /// 
@@ -355,7 +281,9 @@ namespace AsyTcpServer
         {
             if (ClientConnected != null)
             {
+                ++ClientCount;
                 ClientConnected(this, new TcpClientConnectedEventArgs(tcpClient));
+                
             }
         }
 
@@ -363,7 +291,9 @@ namespace AsyTcpServer
         {
             if (ClientDisconnected != null)
             {
+                --ClientCount;
                 ClientDisconnected(this, new TcpClientDisconnectEventArgs(tcpClient));
+                
             }
         }
         #endregion
