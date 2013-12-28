@@ -64,7 +64,7 @@ namespace Server
         private void button1_Click(object sender, EventArgs e)
         {
             StartTheServer();
-            
+            this.button1.Enabled = false;
            
         }
         public void Print(string str)

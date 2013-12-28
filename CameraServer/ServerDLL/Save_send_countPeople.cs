@@ -11,6 +11,8 @@ namespace ServerDLL
         private static write_pic_to_server write_pic_server=new write_pic_to_server();  
         private static ClassVedioCapture VC = new ClassVedioCapture();
         private static Face_detection face_detection=new Face_detection();
+        //设置保存图片路径
+        private static string filePath = System.Environment.CurrentDirectory + "\\pic\\";
         public static void Save(System.Drawing.Image i)
         {
             ImageCodecInfo ici;
@@ -30,17 +32,21 @@ namespace ServerDLL
                 epa.Param[0] = ep;
                 //i.Save(Application.StartupPath + "\\test.jpg", ici, epa);
                 Guid tempCartId = Guid.NewGuid();
-
-                i.Save(Application.StartupPath +"\\"+tempCartId+".jpg", System.Drawing.Imaging.ImageFormat.Jpeg);
-                if (!File.Exists(Application.StartupPath + "\\" + tempCartId + ".jpg")) return;
+                filePath = filePath + Path.DirectorySeparatorChar;
+                if (!Directory.Exists(filePath))
+                {
+                    Directory.CreateDirectory(filePath);
+                }
+                i.Save(filePath+tempCartId+".jpg", System.Drawing.Imaging.ImageFormat.Jpeg);
+                if (!File.Exists(filePath+ tempCartId + ".jpg")) return;
                 //测试检测人头数
                 string ImageURL = "C:\\2.jpg";
       //          MessageBox.Show(face_detection.HeadCounting(ImageURL).ToString());
 
                 //检测图片中的人头数
-                double  Head_sum = face_detection.HeadCounting(Application.StartupPath + "\\" + tempCartId + ".jpg");
+                double  Head_sum = face_detection.HeadCounting(filePath + tempCartId + ".jpg");
          //       MessageBox.Show(Head_sum.ToString());
-                FileStream fs = File.Open(Application.StartupPath + "\\" + tempCartId + ".jpg",FileMode.Open);
+                FileStream fs = File.Open(filePath + tempCartId + ".jpg",FileMode.Open);
                 byte[] fileBytes = new byte[fs.Length];
                 using (fs)
                 {
