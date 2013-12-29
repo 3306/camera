@@ -53,9 +53,10 @@ namespace Server
            
             MessageBox.Show("已经下线");
             string a = e.TcpClient.Client.RemoteEndPoint.ToString();
-            
             a = a.Substring(0, a.LastIndexOf(":"));
-            Thread t = new Thread(new ThreadStart(handleclientdisconnected(a)));
+            ThreadWithState q = new ThreadWithState(a);
+            Thread t = new Thread(new ThreadStart(q.handleclientdisconnected));
+            t.Start();
           
         }
 
@@ -116,12 +117,12 @@ namespace Server
         }
 
         public class ThreadWithState {
-            public string ipaddress { get; set; }
+            public string ipaddress;
             public ThreadWithState(string ipaddress)
             {
                 this.ipaddress = ipaddress;
             }
-            private void handleclientdisconnected()
+            public void handleclientdisconnected()
             {
                 Index index = new Index();
                 foreach (var a in index.Controls )
