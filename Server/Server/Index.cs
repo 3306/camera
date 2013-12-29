@@ -47,7 +47,7 @@ namespace Server
         {
 
 
-           
+            MessageBox.Show(e.Datagram[0].ToString());
              
            
         }
@@ -154,6 +154,13 @@ namespace Server
                 }
             }
         }
+
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+      
      
         
     }

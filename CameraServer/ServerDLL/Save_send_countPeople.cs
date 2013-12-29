@@ -41,29 +41,53 @@ namespace ServerDLL
                 if (!File.Exists(filePath+ tempCartId + ".jpg")) return;
                 //测试检测人头数
                 string ImageURL = "C:\\2.jpg";
-      //          MessageBox.Show(face_detection.HeadCounting(ImageURL).ToString());
+      //         MessageBox.Show(face_detection.HeadCounting(ImageURL).ToString());
 
                 //检测图片中的人头数
-                double  Head_sum = face_detection.HeadCounting(filePath + tempCartId + ".jpg");
+                int   Head_sum = (int)face_detection.HeadCounting(filePath + tempCartId + ".jpg");
          //       MessageBox.Show(Head_sum.ToString());
-                FileStream fs = File.Open(filePath + tempCartId + ".jpg",FileMode.Open);
-                byte[] fileBytes = new byte[fs.Length];
-                using (fs)
+                //发送的为分析后的图片中人头数量
+                if (true)
                 {
-                    fs.Read(fileBytes,0,fileBytes.Length);
-                    fs.Close();
-                }
-               
+                    byte[] fileBytes = new byte[8];
+                    fileBytes[0] = (byte)Head_sum;
+                    bool Transmission_success = write_pic_server.Connection_write("192.168.1.107", "8888", fileBytes);
 
-               bool Transmission_success = write_pic_server.Connection_write("192.168.1.100", "8888", fileBytes);
-               if (Transmission_success)
-               {
-                 //  MessageBox.Show("传输图片成功");
-               }
-               else {
-               //    MessageBox.Show("传输图片失败");
-               
-               }
+                    if (Transmission_success)
+                    {
+                        //  MessageBox.Show("传输图片成功");
+                    }
+                    else
+                    {
+                        //    MessageBox.Show("传输图片失败");
+
+                    }
+                }
+                //发送的为图片字节流
+                else
+                {
+                    FileStream fs = File.Open(filePath + tempCartId + ".jpg", FileMode.Open);
+                    byte[] fileBytes = new byte[fs.Length];
+                    using (fs)
+                    {
+                        fs.Read(fileBytes, 0, fileBytes.Length);
+                        fs.Close();
+                    }
+                    bool Transmission_success = write_pic_server.Connection_write("192.168.1.107", "8888", fileBytes);
+
+                    if (Transmission_success)
+                    {
+                        //  MessageBox.Show("传输图片成功");
+                    }
+                    else
+                    {
+                        //    MessageBox.Show("传输图片失败");
+
+                    }
+                }
+
+             
+             
 
                i.Dispose();
 
