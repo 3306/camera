@@ -53,12 +53,14 @@ namespace Server
         private  void server_ClientDisconnected(object sender, TcpClientDisconnectEventArgs e)
         {
             ClientCount--;
+            MessageBox.Show("已经下线" + ClientCount);
           
         }
 
         private  void server_ClientConnected(object sender, TcpClientConnectedEventArgs e)
         {
             ClientCount++;
+            //MessageBox.Show("已经上线" + ClientCount);
         }
 
         private void button1_Click(object sender, EventArgs e)

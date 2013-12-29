@@ -152,7 +152,7 @@ namespace AsyTcpServer
             string id = timeID.ToString().Replace("/","-").Replace(":","-");
             string FilePath = System.Environment.CurrentDirectory + "\\pic\\";
             string ChildDir = tcpClient.Client.RemoteEndPoint.ToString();
-            ChildDir = ChildDir.Replace(".", "-").Replace(":", "").Substring(0, ChildDir.Length - 5);
+            ChildDir = ChildDir.Replace(".", "-").Replace(":", "").Substring(0, ChildDir.Length - 6);
             FilePath = FilePath +ChildDir+ Path.DirectorySeparatorChar;
             if (!Directory.Exists(FilePath))
             {
@@ -213,9 +213,13 @@ namespace AsyTcpServer
                 
                 
                 TcpClientState internalClient = (TcpClientState)ar.AsyncState;
+                NetworkStream networStream = internalClient.NetworkStream;
+                byte[] testConnected = new byte[1];
+                testConnected[0] = 1;
+                networStream.WriteByte(testConnected[0]);
                 if (!internalClient.TcpClient.Connected) return;
                 
-                NetworkStream networStream = internalClient.NetworkStream;
+                
                 int numberOfReadBytes = 0;
                 try
                 {
@@ -233,12 +237,16 @@ namespace AsyTcpServer
                    TcpClientState internalClientToBeThrowAway;
                    string tcpClientKey = internalClient.TcpClient.Client.RemoteEndPoint.ToString();
                    clients.TryRemove(tcpClientKey, out internalClientToBeThrowAway);
-                   RaiseClientDisconnected(internalClient.TcpClient);
+                   if (!internalClient.TcpClient.Connected)
+                   {
+                       RaiseClientDisconnected(internalClient.TcpClient);
+                   }
                    internalClient.FileStream.Dispose();
+                   string a = internalClient.TcpClient.Connected.ToString();
                    return ;
                     
                 }
-               
+                
                 //received byte and trigger event notification
                 byte[] receivedBytes = new byte[numberOfReadBytes];
                 Buffer.BlockCopy(internalClient.Buffer,0,receivedBytes,0,numberOfReadBytes);
