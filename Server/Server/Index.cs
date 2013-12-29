@@ -20,6 +20,9 @@ namespace Server
         static AsyncTcpServer server;
         delegate void updateclientcallback();
         delegate void handleclientdisconnectedcallback();
+        int btn_x = 0;
+        int btn_y = 0;
+        int itero = 0;
         public Index()
         {
             InitializeComponent();
@@ -62,8 +65,8 @@ namespace Server
 
         public  void server_ClientConnected(object sender, TcpClientConnectedEventArgs e)
         {
-            Thread a = new Thread(new ThreadStart(updateclient));
-            a.Start();
+            //Thread a = new Thread(new ThreadStart(updateclient));
+           // a.Start();
             //MessageBox.Show("已经上线" + ClientCount);
             
         }
@@ -82,20 +85,24 @@ namespace Server
 
         private void button2_Click(object sender, EventArgs e)
         {
-            server.printclient();
+            //server.printclient();
+            this.panel1.Controls.Clear();
             server.BeginMonitorClientConnected();
+            updateclient();
         }
 
 
         private void updateclient()
         {
-            
+            itero = 0;
                 if (server.clients.Keys == null)
                 {
                     return;
                 }
                 foreach (var client in server.clients.Keys)
                 {
+                    
+                    itero +=100;
                     if (this.panel1.InvokeRequired)
                     {
 
@@ -109,6 +116,7 @@ namespace Server
                         a.Text = client.ToString();
                         a.Width = 100;
                         a.Name = client.ToString();
+                        a.Location = new  System.Drawing.Point(btn_x+itero, btn_y);
                         this.panel1.Controls.Add(a);
                     }
                     
