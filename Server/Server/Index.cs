@@ -47,7 +47,7 @@ namespace Server
         {
 
 
-            MessageBox.Show(e.Datagram[0].ToString());
+         //   MessageBox.Show(e.Datagram[0].ToString());
              
            
         }
@@ -78,6 +78,8 @@ namespace Server
          
            
         }
+      
+
         public void Print(string str)
         {
             this.Console_rbx.AppendText(str+"\n");
@@ -89,32 +91,47 @@ namespace Server
             this.panel1.Controls.Clear();
             server.BeginMonitorClientConnected();
             updateclient();
+           
+        }
+
+
+        private void check_Image(string  a)
+        {
+            //server.printclient();
+            MessageBox.Show("我  被 点击");
+            server.clients.Clear();
+            MessageBox.Show(a);
+            server.clients.Clear();
+            server.IP_send_Image=a;
+          
         }
 
 
         private void updateclient()
         {
             itero = 0;
-                if (server.clients.Keys == null)
+                if (server.clients1.Keys == null)
                 {
                     return;
                 }
-                foreach (var client in server.clients.Keys)
+                foreach (var client in server.clients1)
                 {
                     
                     itero +=100;
                     if (this.panel1.InvokeRequired)
                     {
-
-
                         updateclientcallback d = new updateclientcallback(updateclient);
                         this.Invoke(d, new object[] { });
                     }
                     else
                     {
                         Button a = new Button();
-                        a.Text = client.ToString();
-                        a.Width = 100;
+                        string aa = client.Key.ToString() + "点的人数是" + client.Value.Buffer[0];
+                        a.Text = aa;
+                        a.Click += delegate(Object o, EventArgs e) { check_Image(aa); };
+                        
+                   //     a.Click += new EventHandler<TcpClientConnectedEventArgs>(check_Image);
+                        a.Width = 300;
                         a.Name = client.ToString();
                         a.Location = new  System.Drawing.Point(btn_x+itero, btn_y);
                         this.panel1.Controls.Add(a);

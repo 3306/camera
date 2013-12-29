@@ -20,6 +20,8 @@ namespace AsyTcpServer
         private TcpListener listener;
         //唯一一个写图片流的客户状态
         public ConcurrentDictionary<string,TcpClientState> clients;
+       //唯一一个发送图片的ip
+        public string IP_send_Image;
         public ConcurrentDictionary<string, TcpClientState1> clients1;
 
         private bool disposed = false;
@@ -153,7 +155,10 @@ namespace AsyTcpServer
             if (!tcpClient.Connected) return;
             //创建文件流
             //处理发来的分析后的图片中包含的人头数量
-            if (true)
+            string ip = tcpClient.Client.RemoteEndPoint.ToString().Substring(0,tcpClient.Client.RemoteEndPoint.ToString().LastIndexOf(":"));
+            //有待观察
+            Boolean Image_or_Num = ip.Equals(IP_send_Image);
+            if (!Image_or_Num)
             {
                 byte[] buffer = new byte[8];
                 TcpClientState1 internalClient = new TcpClientState1(tcpClient, buffer);
@@ -175,7 +180,6 @@ namespace AsyTcpServer
 
             }
            //处理发来的图片字节
-
             else {
             DateTime timeID = DateTime .Now;
             string id = timeID.ToString().Replace("/","-").Replace(":","-");
@@ -321,10 +325,10 @@ namespace AsyTcpServer
                 //TcpClientState internalClientToBeThrowAway;
                 //string tcpClientKey = internalClient.TcpClient.Client.RemoteEndPoint.ToString();
                 //clients.TryRemove(tcpClientKey, out internalClientToBeThrowAway);
-                if (!internalClient.TcpClient.Connected)
-               {
-                   RaiseClientDisconnected(internalClient.TcpClient);
-               }
+           //     if (!internalClient.TcpClient.Connected)
+            //   {
+             //      RaiseClientDisconnected(internalClient.TcpClient);
+             //  }
                 internalClient.NetworkStream.Dispose();
                 return;
             }
