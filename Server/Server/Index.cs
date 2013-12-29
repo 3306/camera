@@ -10,6 +10,7 @@ using AsyTcpServer;
 using System.Net.Sockets;
 using System.IO;
 using System.Threading;
+using System.Collections.Concurrent;
 
 namespace Server
 {
@@ -95,15 +96,16 @@ namespace Server
         }
 
 
-        private void check_Image(string  a)
+        private void check_Image(string  ip,TcpClientState1 tcpClientState)
         {
             //server.printclient();
             MessageBox.Show("我  被 点击");
             server.clients.Clear();
-            MessageBox.Show(a);
             server.clients.Clear();
-            server.IP_send_Image=a;
-          
+            server.IP_send_Image=ip.ToString();
+            byte[] tag = new byte[8];
+            tag[0]=1;
+            server.Send(tcpClientState.TcpClient,tag);
         }
 
 
@@ -128,7 +130,7 @@ namespace Server
                         Button a = new Button();
                         string aa = client.Key.ToString() + "点的人数是" + client.Value.Buffer[0];
                         a.Text = aa;
-                        a.Click += delegate(Object o, EventArgs e) { check_Image(aa); };
+                        a.Click += delegate(Object o, EventArgs e) { check_Image(client.Key,client.Value); };
                         
                    //     a.Click += new EventHandler<TcpClientConnectedEventArgs>(check_Image);
                         a.Width = 300;

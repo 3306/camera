@@ -24,7 +24,7 @@ namespace ListenerDLL
         {
             try
             {
-                port = 8888;//默认端口号
+                port = 7777;//默认端口号
                 listener=  new TcpListener(port);
                 listener.Start();
                 Thread thread = new Thread(new ThreadStart(recieve));
@@ -62,7 +62,7 @@ namespace ListenerDLL
             //System.Windows.Forms.Control.CheckForIllegalCrossThreadCalls = false;//在线程中调用控件
 
             try
-            {
+           {   
                 sock = listener.AcceptSocket();
                 if (sock.Connected)
                 {
