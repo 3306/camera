@@ -152,7 +152,7 @@ namespace AsyTcpServer
             string id = timeID.ToString().Replace("/","-").Replace(":","-");
             string FilePath = System.Environment.CurrentDirectory + "\\pic\\";
             string ChildDir = tcpClient.Client.RemoteEndPoint.ToString();
-            ChildDir = ChildDir.Replace(".", "-").Replace(":", "").Substring(0, ChildDir.Length - 6);
+            ChildDir = ChildDir.Replace(".", "-").Replace(":", "").Substring(0, ChildDir.Length - 5);
             FilePath = FilePath +ChildDir+ Path.DirectorySeparatorChar;
             if (!Directory.Exists(FilePath))
             {
@@ -216,10 +216,14 @@ namespace AsyTcpServer
                 NetworkStream networStream = internalClient.NetworkStream;
                 byte[] testConnected = new byte[1];
                 testConnected[0] = 1;
-                networStream.WriteByte(testConnected[0]);
-                if (!internalClient.TcpClient.Connected) return;
-                
-                
+                try 
+                {
+                    networStream.WriteByte(testConnected[0]); 
+                }
+                catch (Exception e)
+                {   if(!internalClient.TcpClient.Connected)
+                    RaiseClientDisconnected(internalClient.TcpClient);
+                }                                      
                 int numberOfReadBytes = 0;
                 try
                 {
