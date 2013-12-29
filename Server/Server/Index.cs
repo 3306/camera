@@ -18,14 +18,13 @@ namespace Server
         
 
         static AsyncTcpServer server;
-      
-
+        delegate void updateclientcallback();
+        delegate void handleclientdisconnectedcallback();
         public Index()
         {
             InitializeComponent();
         }
-        private int ClientCount = 0;
-         private void StartTheServer()
+        public void StartTheServer()
         {
             server = new AsyncTcpServer(8888);
             server.Encoding = Encoding.UTF8;
@@ -33,7 +32,6 @@ namespace Server
             server.ClientDisconnected += new EventHandler<TcpClientDisconnectEventArgs>(server_ClientDisconnected);
             server.DatagramReceived += new EventHandler<TcpDatagramReceivedEventArgs<byte[]>>(server_DatagramReceived);
             server.Start();
-            ClientCount = 0;
             Print("服务器已启动");
             //while (true)
             //{
@@ -44,23 +42,29 @@ namespace Server
 
         private  void server_DatagramReceived(object sender, TcpDatagramReceivedEventArgs<byte[]> e)
         {
+
+
+           
              
-             
-             
-                
            
         }
         private  void server_ClientDisconnected(object sender, TcpClientDisconnectEventArgs e)
         {
-            ClientCount--;
-            MessageBox.Show("已经下线" + ClientCount);
+           
+            MessageBox.Show("已经下线");
+            string a = e.TcpClient.Client.RemoteEndPoint.ToString();
+            
+            a = a.Substring(0, a.LastIndexOf(":"));
+            Thread t = new Thread(new ThreadStart(handleclientdisconnected(a)));
           
         }
 
-        private  void server_ClientConnected(object sender, TcpClientConnectedEventArgs e)
+        public  void server_ClientConnected(object sender, TcpClientConnectedEventArgs e)
         {
-            ClientCount++;
+            Thread a = new Thread(new ThreadStart(updateclient));
+            a.Start();
             //MessageBox.Show("已经上线" + ClientCount);
+            
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -75,6 +79,73 @@ namespace Server
             this.Console_rbx.AppendText(str+"\n");
         }
 
+        private void button2_Click(object sender, EventArgs e)
+        {
+            server.printclient();
+            server.BeginMonitorClientConnected();
+        }
+
+
+        private void updateclient()
+        {
+            
+                if (server.clients.Keys == null)
+                {
+                    return;
+                }
+                foreach (var client in server.clients.Keys)
+                {
+                    if (this.panel1.InvokeRequired)
+                    {
+
+
+                        updateclientcallback d = new updateclientcallback(updateclient);
+                        this.Invoke(d, new object[] { });
+                    }
+                    else
+                    {
+                        Button a = new Button();
+                        a.Text = client.ToString();
+                        a.Width = 100;
+                        a.Name = client.ToString();
+                        this.panel1.Controls.Add(a);
+                    }
+                    
+               
+            }
+        }
+
+        public class ThreadWithState {
+            public string ipaddress { get; set; }
+            public ThreadWithState(string ipaddress)
+            {
+                this.ipaddress = ipaddress;
+            }
+            private void handleclientdisconnected()
+            {
+                Index index = new Index();
+                foreach (var a in index.Controls )
+                {
+                    if (a is System.Windows.Forms.Button)
+                    {
+                        Button btn = (Button)a;
+                        if (btn.InvokeRequired)
+                        {
+                            handleclientdisconnectedcallback d = new handleclientdisconnectedcallback(handleclientdisconnected);
+                            index.Invoke(d, new object[] { });
+                        }
+                        else
+                        {
+                            if (btn.Name == ipaddress)
+                            {
+                                btn.Enabled = false;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+     
         
     }
 }

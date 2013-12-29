@@ -46,7 +46,7 @@ namespace ServerDLL
                 using (netStream)
                 {
                     netStream.Write(fileBytes, 0, fileBytes.Length);
-                    netStream.Dispose();
+                    //netStream.Dispose();
                 }
                 return true;
             }

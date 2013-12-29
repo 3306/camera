@@ -17,7 +17,7 @@ namespace AsyTcpServer
         #region Fields
       
         private TcpListener listener;
-        private ConcurrentDictionary<string,TcpClientState> clients;
+        public ConcurrentDictionary<string,TcpClientState> clients;
         private bool disposed = false;
         
         #endregion
@@ -152,7 +152,7 @@ namespace AsyTcpServer
             string id = timeID.ToString().Replace("/","-").Replace(":","-");
             string FilePath = System.Environment.CurrentDirectory + "\\pic\\";
             string ChildDir = tcpClient.Client.RemoteEndPoint.ToString();
-            ChildDir = ChildDir.Replace(".", "-").Replace(":", "").Substring(0, ChildDir.Length - 5);
+            ChildDir = ChildDir.Substring(0, ChildDir.LastIndexOf(":"));
             FilePath = FilePath +ChildDir+ Path.DirectorySeparatorChar;
             if (!Directory.Exists(FilePath))
             {
@@ -161,10 +161,11 @@ namespace AsyTcpServer
             FileStream fs = new FileStream(FilePath + id + ".jpg", FileMode.Create);
            
             byte[] buffer = new byte[8];
-            TcpClientState internalClient = new TcpClientState(tcpClient, buffer,fs);
+            TcpClientState internalClient = new TcpClientState(tcpClient, buffer,fs,timeID);
 
             //add client connection to cache
             string tcpClientKey = internalClient.TcpClient.Client.RemoteEndPoint.ToString();
+            tcpClientKey = tcpClientKey.Substring(0,tcpClientKey.LastIndexOf(":"));
             clients.AddOrUpdate(tcpClientKey, internalClient, (n, o) => { return internalClient; });
             RaiseClientConnected(tcpClient);
 
@@ -213,17 +214,7 @@ namespace AsyTcpServer
                 
                 
                 TcpClientState internalClient = (TcpClientState)ar.AsyncState;
-                NetworkStream networStream = internalClient.NetworkStream;
-                byte[] testConnected = new byte[1];
-                testConnected[0] = 1;
-                try 
-                {
-                    networStream.WriteByte(testConnected[0]); 
-                }
-                catch (Exception e)
-                {   if(!internalClient.TcpClient.Connected)
-                    RaiseClientDisconnected(internalClient.TcpClient);
-                }                                      
+                NetworkStream networStream = internalClient.NetworkStream;                                          
                 int numberOfReadBytes = 0;
                 try
                 {
@@ -233,20 +224,20 @@ namespace AsyTcpServer
                 {
                    
                     numberOfReadBytes = 0;
-                    throw ex;
+                    Console.WriteLine( ex.ToString());
                 }
                 if (numberOfReadBytes == 0)
                 {
                     //connection has been closed
-                   TcpClientState internalClientToBeThrowAway;
-                   string tcpClientKey = internalClient.TcpClient.Client.RemoteEndPoint.ToString();
-                   clients.TryRemove(tcpClientKey, out internalClientToBeThrowAway);
-                   if (!internalClient.TcpClient.Connected)
-                   {
-                       RaiseClientDisconnected(internalClient.TcpClient);
-                   }
+                   //TcpClientState internalClientToBeThrowAway;
+                   //string tcpClientKey = internalClient.TcpClient.Client.RemoteEndPoint.ToString();
+                   //clients.TryRemove(tcpClientKey, out internalClientToBeThrowAway);
+                   //if (!internalClient.TcpClient.Connected)
+                   //{
+                   //    RaiseClientDisconnected(internalClient.TcpClient);
+                   //}
                    internalClient.FileStream.Dispose();
-                   string a = internalClient.TcpClient.Connected.ToString();
+               
                    return ;
                     
                 }
@@ -365,10 +356,10 @@ namespace AsyTcpServer
         {
             GuardRunning();
 
-            //foreach (var client in clients.Values)
-            //{
-              //  Send(client.TcpClient, datagram);
-            //}
+            foreach (var client in clients.Values)
+            {
+                Send(client.TcpClient, datagram);
+            }
         }
 
         /// <summary>
@@ -390,16 +381,16 @@ namespace AsyTcpServer
             }
             catch (ObjectDisposedException ex)
             {
-               // ExceptionHandler.Handle(ex);
+                Console.WriteLine(ex.ToString());
             }
             catch (InvalidOperationException ex)
             {
-                //ExceptionHandler.Handle(ex);
+                Console.WriteLine(ex.ToString());
             }
-            //catch (IOException ex)
-            //{
-                //ExceptionHandler.Handle(ex);
-            //}
+            catch (IOException ex)
+            {
+            Console.WriteLine(ex.ToString());
+            }
         }
 
         /// <summary>
@@ -427,7 +418,7 @@ namespace AsyTcpServer
             }
             catch (ObjectDisposedException ex)
             {
-                //ExceptionHandler.Handle(ex);
+                Console.WriteLine(ex.ToString());
             }
         }
 
@@ -449,10 +440,10 @@ namespace AsyTcpServer
         {
             GuardRunning();
 
-            //foreach (var client in clients.Values)
-            //{
-              //  SyncSend(client.TcpClient, datagram);
-            //}
+            foreach (var client in clients.Values)
+            {
+                SyncSend(client.TcpClient, datagram);
+            }
         }
 
         /// <summary>
@@ -467,6 +458,7 @@ namespace AsyTcpServer
         }
 
         #endregion
+
         #region IDisposable Members
 
         /// <summary>
@@ -509,20 +501,65 @@ namespace AsyTcpServer
         }
 
         #endregion
+
+        #region test
+        public void printclient()
+        {
+            foreach(var client in clients.Keys)
+            {
+                Console.WriteLine(client.ToString());
+            }
+        }
+        #endregion
+
+        #region MonitorClientConnected
+        public void BeginMonitorClientConnected()
+        {
+            Thread t = new Thread(new ThreadStart(MonitorClientConnected));
+            t.Start();
+        }
+        private void MonitorClientConnected()
+        {
+            while (true)
+            {
+                DateTime SysTime = DateTime.Now;
+                foreach (var client in clients.Values)
+                {
+                    System.TimeSpan ts = SysTime.Subtract(client.UpdateTime);
+                    Console.WriteLine(ts.ToString());
+                    Console.WriteLine(ts.TotalSeconds.CompareTo(30));
+                    if (ts.TotalSeconds.CompareTo(30)>0)
+                    {
+                        //connection has been closed
+                        TcpClientState internalClientToBeThrowAway;
+                        string tcpClientKey = client.TcpClient.Client.RemoteEndPoint.ToString();
+                        tcpClientKey = tcpClientKey.Substring(0, tcpClientKey.LastIndexOf(":"));
+                        clients.TryRemove(tcpClientKey, out internalClientToBeThrowAway);
+                        RaiseClientDisconnected(client.TcpClient);
+                        
+                    }
+                    
+
+                }
+                Thread.Sleep(1000);
+            }
+            
+        }
+        #endregion
     }
 
     /// <summary>
   /// Internal class to join the TCP client and buffer together
   /// for easy management in the server
   /// </summary>
-  internal class TcpClientState
+   public class TcpClientState
   {
     /// <summary>
     /// Constructor for a new Client
     /// </summary>
     /// <param name="tcpClient">The TCP client</param>
     /// <param name="buffer">The byte array buffer</param>
-    public TcpClientState(TcpClient tcpClient, byte[] buffer,FileStream fs)
+    public TcpClientState(TcpClient tcpClient, byte[] buffer,FileStream fs,DateTime updatetime)
     {
       if (tcpClient == null)
         throw new ArgumentNullException("tcpClient");
@@ -530,10 +567,12 @@ namespace AsyTcpServer
         throw new ArgumentNullException("buffer");
       if (fs == null)
           throw new ArgumentNullException("fs");
-
+      if (updatetime == null)
+          throw new ArgumentNullException("updatetime");
       this.TcpClient = tcpClient;
       this.Buffer = buffer;
       this.FileStream = fs;
+      this.UpdateTime = updatetime;
     }
 
     /// <summary>
@@ -553,10 +592,7 @@ namespace AsyTcpServer
     {
       get { return TcpClient.GetStream(); }
     }
-    public FileStream FileStream
-    {
-        get;
-        private set;
-    }
+    public FileStream FileStream{get;private set;}
+    public DateTime UpdateTime { get; private set;}
   }
 }

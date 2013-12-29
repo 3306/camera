@@ -30,6 +30,8 @@
         {
             this.button1 = new System.Windows.Forms.Button();
             this.Console_rbx = new System.Windows.Forms.RichTextBox();
+            this.button2 = new System.Windows.Forms.Button();
+            this.panel1 = new System.Windows.Forms.Panel();
             this.SuspendLayout();
             // 
             // button1
@@ -53,11 +55,30 @@
             this.Console_rbx.TabIndex = 1;
             this.Console_rbx.Text = "";
             // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(469, 372);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(75, 23);
+            this.button2.TabIndex = 2;
+            this.button2.Text = "button2";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // panel1
+            // 
+            this.panel1.Location = new System.Drawing.Point(270, 21);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(493, 312);
+            this.panel1.TabIndex = 3;
+            // 
             // Index
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(560, 417);
+            this.ClientSize = new System.Drawing.Size(813, 417);
+            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.button2);
             this.Controls.Add(this.Console_rbx);
             this.Controls.Add(this.button1);
             this.Name = "Index";
@@ -70,6 +91,8 @@
 
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.RichTextBox Console_rbx;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Panel panel1;
     }
 }
 
