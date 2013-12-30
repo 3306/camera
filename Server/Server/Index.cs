@@ -98,17 +98,19 @@ namespace Server
         }
 
 
-        private void check_Image(string  ip,TcpClientState1 tcpClientState)
+        private void check_Image(string  ip,TcpClientDefaultState tcpClientState)
         {
-            //server.printclient();
-            MessageBox.Show("我  被 点击");
+            OperateCamera cameraform = new OperateCamera(tcpClientState);
+            cameraform.Show();
+            //server.printclient();        
             server.clients.Clear();
-         
             server.IP_send_Image=ip.ToString();
+            string optionsstr = "";
+
             byte[] tag = new byte[8];
             tag[0]=1;
             TcpClient tcpclient = new TcpClient();
-            IPEndPoint ipe = new System.Net.IPEndPoint(IPAddress.Parse("192.168.1.100"), 9999);
+            IPEndPoint ipe = new System.Net.IPEndPoint(IPAddress.Parse("192.168.1.107"), 9999);
             tcpclient.Connect(ipe);
             server.Send(tcpclient, tag);
         }
