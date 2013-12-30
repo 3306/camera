@@ -72,6 +72,7 @@
   <ItemGroup>
     <Compile Include="ClassEncode.cs" />
     <Compile Include="face_detectionTest.cs" />
+    <Compile Include="listenControlCommand.cs" />
     <Compile Include="Save_send_countPeople.cs" />
     <Compile Include="ClassShowVideo.cs" />
     <Compile Include="ClassVedioCapture.cs" />

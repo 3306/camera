@@ -13,6 +13,7 @@ namespace ListenerDLL
     {
         private static int port;//新加的
         private static Socket sock;//新加的
+        private static TcpClient tcpclient;
         private static int number;//新加的大师大师
         private static int j;//新加的
         private static TcpListener listener;//新加的
@@ -24,8 +25,7 @@ namespace ListenerDLL
         {
             try
             {
-                port = 7777;//默认端口号
-                listener=  new TcpListener(port);
+                listener = new TcpListener(IPAddress.Parse("192.168.1.107"), 9999);
                 listener.Start();
                 Thread thread = new Thread(new ThreadStart(recieve));
                 thread.Start();
@@ -62,29 +62,30 @@ namespace ListenerDLL
             //System.Windows.Forms.Control.CheckForIllegalCrossThreadCalls = false;//在线程中调用控件
 
             try
-           {   
-                sock = listener.AcceptSocket();
-                if (sock.Connected)
-                {
-
-                    byte[] bytee = System.Text.Encoding.BigEndianUnicode.GetBytes(fileStr.ToCharArray());
-                    sock.Send(bytee, bytee.Length, 0);
-
-                    //接受信息＋＋＋＋
-                    while (!control)
+            {
+                    sock = listener.AcceptSocket();
+                    if (sock.Connected)
                     {
-                        NetworkStream stream = new NetworkStream(sock);
-                        byte[] by = new Byte[1024];
-                        int i = sock.Receive(by, by.Length, 0);
 
-                        transfer(ref stream);
+                        byte[] bytee = System.Text.Encoding.BigEndianUnicode.GetBytes(fileStr.ToCharArray());
+                        sock.Send(bytee, bytee.Length, 0);
+
+                        //接受信息＋＋＋＋
+                        while (!control)
+                        {
+                            NetworkStream stream = new NetworkStream(sock);
+                            byte[] by = new Byte[1024];
+                            int i = sock.Receive(by, by.Length, 0);
+
+                            transfer(ref stream);
+                        }
+
                     }
-
                 }
-            }
+            
             catch (Exception ex)
             {
-                
+
             }
         }
 

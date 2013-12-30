@@ -9,7 +9,12 @@ namespace ServerDLL
 {   
     class write_pic_to_server
     {
-        private static TcpClient client;
+       private   static  IPHostEntry IpEntry = Dns.GetHostEntry(Dns.GetHostName());
+        private    static  string myip = IpEntry.AddressList[2].ToString();
+        private static IPEndPoint ipe = new IPEndPoint(IPAddress.Parse(myip), 7777);
+      // private  static TcpClient client = new TcpClient(ipe);
+       private static TcpClient client;
+        
         private static NetworkStream netStream;
         private static FileStream filestream;
         private static int i;
@@ -22,7 +27,7 @@ namespace ServerDLL
 
             int port = 0;
             IPAddress myIP = IPAddress.Parse("192.168.1.100");
-            client = new TcpClient();
+            client = new TcpClient(ipe);
             try
             {
                 myIP = IPAddress.Parse(sIP);
@@ -41,7 +46,9 @@ namespace ServerDLL
             }
             try
             {
+            
                 client.Connect(myIP, port);
+
                 netStream = client.GetStream();
                 using (netStream)
                 {

@@ -11,6 +11,8 @@ using System.Net.Sockets;
 using System.IO;
 using System.Threading;
 using System.Collections.Concurrent;
+using System.Net;
+using System.Net;
 
 namespace Server
 {
@@ -101,11 +103,14 @@ namespace Server
             //server.printclient();
             MessageBox.Show("我  被 点击");
             server.clients.Clear();
-            server.clients.Clear();
+         
             server.IP_send_Image=ip.ToString();
             byte[] tag = new byte[8];
             tag[0]=1;
-            server.Send(tcpClientState.TcpClient,tag);
+            TcpClient tcpclient = new TcpClient();
+            IPEndPoint ipe = new System.Net.IPEndPoint(IPAddress.Parse("192.168.1.100"), 9999);
+            tcpclient.Connect(ipe);
+            server.Send(tcpclient, tag);
         }
 
 
@@ -174,13 +179,5 @@ namespace Server
             }
         }
 
-        private void panel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-      
-     
-        
     }
 }
