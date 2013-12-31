@@ -26,7 +26,7 @@ namespace Server
         private void GetImage_Click(object sender, EventArgs e)
         {
             string CurrentIP = tcpClientState.TcpClient.Client.RemoteEndPoint.ToString().Substring(0,tcpClientState.TcpClient.Client.RemoteEndPoint.ToString().LastIndexOf(":"));
-            string operatingstr = "GETIMAGE";
+            string operatingstr = "getImage";
             byte[] operatingbyte = System.Text.Encoding.Default.GetBytes(operatingstr);
             TcpClient tcpclient = new TcpClient();
             IPEndPoint ip = new IPEndPoint(IPAddress.Parse(CurrentIP), 9999);

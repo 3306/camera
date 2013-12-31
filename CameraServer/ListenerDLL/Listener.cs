@@ -68,10 +68,8 @@ namespace ListenerDLL
                 {
                     tcpclient = listener.AcceptTcpClient();
                     NetworkStream ns = tcpclient.GetStream();
-                  
                     ns.Read(by, 0, by.Length);
                     string str = System.Text.Encoding.Default.GetString(by);
-                    MessageBox.Show(str);
                     RaiseControlReceived(tcpclient, by);
                     ns.Dispose();
                   

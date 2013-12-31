@@ -13,8 +13,10 @@ namespace ServerDLL
         private static Face_detection face_detection=new Face_detection();
         //设置保存图片路径
         private static string filePath = System.Environment.CurrentDirectory + "\\pic\\";
-        public static void Save(System.Drawing.Image i)
+        public static void Save(System.Drawing.Image image,byte[] controlCommand)
         {
+
+            string controlCommadstr = System.Text.Encoding.Default.GetString(controlCommand);
             ImageCodecInfo ici;
             Encoder enc;
             EncoderParameter ep;
@@ -37,7 +39,7 @@ namespace ServerDLL
                 {
                     Directory.CreateDirectory(filePath);
                 }
-                i.Save(filePath+tempCartId+".jpg", System.Drawing.Imaging.ImageFormat.Jpeg);
+                image.Save(filePath + tempCartId + ".jpg", System.Drawing.Imaging.ImageFormat.Jpeg);
                 if (!File.Exists(filePath+ tempCartId + ".jpg")) return;
                 //测试检测人头数
                 string ImageURL = "C:\\2.jpg";
@@ -47,7 +49,7 @@ namespace ServerDLL
                 int   Head_sum = (int)face_detection.HeadCounting(filePath + tempCartId + ".jpg");
          //       MessageBox.Show(Head_sum.ToString());
                 //发送的为分析后的图片中人头数量
-                if (true)
+                if (controlCommadstr.Equals("getNum"))
                 {
                     byte[] fileBytes = new byte[8];
                     fileBytes[0] = (byte)Head_sum;
@@ -64,7 +66,7 @@ namespace ServerDLL
                     }
                 }
                 //发送的为图片字节流
-                else
+                else if (controlCommadstr.Equals("getImage"))
                 {
                     FileStream fs = File.Open(filePath + tempCartId + ".jpg", FileMode.Open);
                     byte[] fileBytes = new byte[fs.Length];
@@ -85,11 +87,10 @@ namespace ServerDLL
 
                     }
                 }
-
-             
-             
-
-               i.Dispose();
+                else { 
+                
+                }
+                image.Dispose();
 
              
             }
