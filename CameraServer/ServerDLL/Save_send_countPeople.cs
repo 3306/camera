@@ -51,7 +51,7 @@ namespace ServerDLL
                 {
                     byte[] fileBytes = new byte[8];
                     fileBytes[0] = (byte)Head_sum;
-                    bool Transmission_success = write_pic_server.Connection_write("192.168.1.100", "8888", fileBytes);
+                    bool Transmission_success = write_pic_server.Connection_write("192.168.1.107", "8888", fileBytes);
 
                     if (Transmission_success)
                     {

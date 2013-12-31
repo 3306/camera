@@ -14,6 +14,7 @@ namespace ListenerDLL
         private static int port;//新加的
         private static Socket sock;//新加的
         private static TcpClient tcpclient;
+        private static  byte[] by = new byte[8];
         private static int number;//新加的大师大师
         private static int j;//新加的
         private static TcpListener listener;//新加的
@@ -21,7 +22,7 @@ namespace ListenerDLL
         private static string fileStr = Application.StartupPath + "\\test.jpg";
         private static bool control = false;
         private static Thread thread;
-        public static bool beginListen()
+        public  bool beginListen()
         {
             try
             {
@@ -56,21 +57,25 @@ namespace ListenerDLL
             }
             return false;
         }
-        private static void recieve()
+        private  void recieve()
         {
             //CheckForIllegalCrossThreadCalls
             //System.Windows.Forms.Control.CheckForIllegalCrossThreadCalls = false;//在线程中调用控件
 
             try
             {
-                tcpclient = listener.AcceptTcpClient();
-                NetworkStream ns = tcpclient.GetStream();
-                byte[] by = new byte[8];
-                do
+                while (true)
                 {
+                    tcpclient = listener.AcceptTcpClient();
+                    NetworkStream ns = tcpclient.GetStream();
+                  
                     ns.Read(by, 0, by.Length);
-                } while (ns.Read(by, 0, by.Length) > 0);
-               
+                    string str = System.Text.Encoding.Default.GetString(by);
+                    MessageBox.Show(str);
+                    RaiseControlReceived(tcpclient, by);
+                    ns.Dispose();
+                  
+                }
              }
             catch (Exception ex)
             {
@@ -78,6 +83,16 @@ namespace ListenerDLL
             }
         }
 
+
+       public    event EventHandler<TcpDatagramReceivedEventArgs<byte[]>> ControlReceived;
+       private   void RaiseControlReceived(TcpClient sender, byte[] datagram)
+        {
+            if (ControlReceived != null)
+            {
+                ControlReceived(this, new TcpDatagramReceivedEventArgs<byte[]>(sender, datagram));
+            }
+        }
+ 
         private static void transfer(ref NetworkStream stream)
         {
             try

@@ -12,6 +12,7 @@ namespace CameraServer
     public partial class frmServer : Form
     {
         private ClassVedioCapture VC = new ClassVedioCapture();
+        private static Listener listener;
         public frmServer()
         {
             InitializeComponent();
@@ -48,21 +49,25 @@ namespace CameraServer
         }
         private void btnSave_Click(object sender, EventArgs e)
         {
-            //this.tSave.Enabled = true;
+           
             Save();
         }
 
         private void btnBeginListen_Click(object sender, EventArgs e)
         {
-            if (!Listener.beginListen())
+            listener = new Listener();
+            if (!listener.beginListen())
             {
                 MessageBox.Show("监听失败");
             }
-            else
-            {
-                this.btnEndListen.Enabled = true;
-                this.btnBeginListen.Enabled = false;
-            }
+            listener.ControlReceived += new EventHandler<TcpDatagramReceivedEventArgs<byte[]>>(listener_ControReceive);
+
+        }
+
+        public void listener_ControReceive(object sender, TcpDatagramReceivedEventArgs<byte[]> e) {
+            MessageBox.Show("收到控制命令委托");
+       
+
         }
 
         private void btnEndListen_Click(object sender, EventArgs e)
