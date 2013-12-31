@@ -100,19 +100,19 @@ namespace Server
 
         private void check_Image(string  ip,TcpClientDefaultState tcpClientState)
         {
-            OperateCamera cameraform = new OperateCamera(tcpClientState);
+            OperateCamera cameraform = new OperateCamera(tcpClientState, server);
             cameraform.Show();
             //server.printclient();        
-            server.clients.Clear();
-            server.IP_send_Image=ip.ToString();
-            string optionsstr = "";
+           // server.clients.Clear();
+           // server.IP_send_Image=ip.ToString();
+            //string optionsstr = "";
 
-            byte[] tag = new byte[8];
-            tag[0]=1;
-            TcpClient tcpclient = new TcpClient();
-            IPEndPoint ipe = new System.Net.IPEndPoint(IPAddress.Parse("192.168.1.107"), 9999);
-            tcpclient.Connect(ipe);
-            server.Send(tcpclient, tag);
+           // byte[] tag = new byte[8];
+           // tag[0]=1;
+            //TcpClient tcpclient = new TcpClient();
+            //IPEndPoint ipe = new System.Net.IPEndPoint(IPAddress.Parse("192.168.1.107"), 9999);
+            //tcpclient.Connect(ipe);
+            //server.Send(tcpclient, tag);
         }
 
 

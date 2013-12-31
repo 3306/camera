@@ -15,11 +15,12 @@ namespace Server
     public partial class OperateCamera : Form
     {
         TcpClientDefaultState tcpClientState;
-        static AsyncTcpServer server;
-        public OperateCamera(TcpClientDefaultState tcpClientState)
+        AsyncTcpServer server;
+        public OperateCamera(TcpClientDefaultState tcpClientState,AsyncTcpServer server)
         {
             InitializeComponent();
             this.tcpClientState = tcpClientState;
+            this.server = server;
         }
 
         private void GetImage_Click(object sender, EventArgs e)
@@ -30,7 +31,8 @@ namespace Server
             TcpClient tcpclient = new TcpClient();
             IPEndPoint ip = new IPEndPoint(IPAddress.Parse(CurrentIP), 9999);
             tcpclient.Connect(ip);
-            server.Send(tcpclient, operatingbyte);         
+            server.Send(tcpclient, operatingbyte);
+            server.IP_send_Image = CurrentIP;
         }
         
     }
