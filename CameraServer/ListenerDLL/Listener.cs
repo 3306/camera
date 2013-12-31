@@ -63,26 +63,15 @@ namespace ListenerDLL
 
             try
             {
-                    sock = listener.AcceptSocket();
-                    if (sock.Connected)
-                    {
-
-                        byte[] bytee = System.Text.Encoding.BigEndianUnicode.GetBytes(fileStr.ToCharArray());
-                        sock.Send(bytee, bytee.Length, 0);
-
-                        //接受信息＋＋＋＋
-                        while (!control)
-                        {
-                            NetworkStream stream = new NetworkStream(sock);
-                            byte[] by = new Byte[1024];
-                            int i = sock.Receive(by, by.Length, 0);
-
-                            transfer(ref stream);
-                        }
-
-                    }
-                }
-            
+                tcpclient = listener.AcceptTcpClient();
+                NetworkStream ns = tcpclient.GetStream();
+                byte[] by = new byte[8];
+                do
+                {
+                    ns.Read(by, 0, by.Length);
+                } while (ns.Read(by, 0, by.Length) > 0);
+               
+             }
             catch (Exception ex)
             {
 
