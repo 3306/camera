@@ -36,8 +36,6 @@ namespace ListenerDLL
             {
                 return false;
             }
-            return false;
-
         }
         public static bool endListen()
         {

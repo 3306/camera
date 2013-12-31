@@ -11,7 +11,10 @@ namespace CameraServer
 {
     public partial class frmServer : Form
     {
-        private ClassVedioCapture VC = new ClassVedioCapture();
+     
+        private static  string str = "getNum";
+       private  static    byte[] ControlCommand = System.Text.Encoding.Default.GetBytes(str);
+        private   static ClassVedioCapture VC = new ClassVedioCapture();
         private static Listener listener;
         public frmServer()
         {
@@ -45,10 +48,9 @@ namespace CameraServer
         private void Save()
         {
             VC.CopyToClipBorad();
-            string str = "getNum";
-            byte[] operatingbyte = System.Text.Encoding.Default.GetBytes(str);
-            
-            Save_send_countPeople.Save(VC.getCaptureImage(),operatingbyte);
+
+
+            Save_send_countPeople.Save(VC.getCaptureImage(), ControlCommand);
         }
         private void btnSave_Click(object sender, EventArgs e)
         {
@@ -68,8 +70,7 @@ namespace CameraServer
         }
 
         private void listener_ControReceive(object sender, TcpDatagramReceivedEventArgs<byte[]> e) {
-            VC.CopyToClipBorad();
-            Save_send_countPeople.Save(VC.getCaptureImage(), e.Datagram);
+            ControlCommand = e.Datagram;
         }
 
         private void btnEndListen_Click(object sender, EventArgs e)

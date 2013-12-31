@@ -35,6 +35,7 @@
             this.btnSave = new System.Windows.Forms.Button();
             this.btnBeginListen = new System.Windows.Forms.Button();
             this.btnEndListen = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxShow)).BeginInit();
             this.SuspendLayout();
             // 
@@ -94,6 +95,16 @@
             this.btnEndListen.UseVisualStyleBackColor = true;
             this.btnEndListen.Click += new System.EventHandler(this.btnEndListen_Click);
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(203, 445);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 7;
+            this.button1.Text = " 选择设备";
+            this.button1.UseVisualStyleBackColor = true;
+       //     this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // frmServer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
@@ -102,6 +113,7 @@
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ClientSize = new System.Drawing.Size(640, 480);
             this.ControlBox = false;
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.btnEndListen);
             this.Controls.Add(this.btnBeginListen);
             this.Controls.Add(this.btnSave);
@@ -130,6 +142,7 @@
         private System.Windows.Forms.Button btnSave;
         private System.Windows.Forms.Button btnBeginListen;
         private System.Windows.Forms.Button btnEndListen;
+        private System.Windows.Forms.Button button1;
     }
 }
 

@@ -70,6 +70,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AviCapture.cs" />
     <Compile Include="ClassEncode.cs" />
     <Compile Include="face_detectionTest.cs" />
     <Compile Include="listenControlCommand.cs" />
@@ -78,6 +79,7 @@
     <Compile Include="ClassVedioCapture.cs" />
     <Compile Include="Face_detection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="video.cs" />
     <Compile Include="write_Num_to_server.cs" />
     <Compile Include="write_pic_to_server.cs" />
   </ItemGroup>
