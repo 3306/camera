@@ -21,7 +21,8 @@ namespace ServerDLL
             Encoder enc;
             EncoderParameter ep;
             EncoderParameters epa;
-
+            string ServerIPAddress = "192.168.1.102";
+            string ServerPort = "8888";
             try
             {
                 //   Initialize   the   necessary   objects   
@@ -42,7 +43,7 @@ namespace ServerDLL
                 image.Save(filePath + tempCartId + ".jpg", System.Drawing.Imaging.ImageFormat.Jpeg);
                 if (!File.Exists(filePath+ tempCartId + ".jpg")) return;
                 //测试检测人头数
-                string ImageURL = "C:\\2.jpg";
+                
       //         MessageBox.Show(face_detection.HeadCounting(ImageURL).ToString());
 
                 //检测图片中的人头数
@@ -53,7 +54,7 @@ namespace ServerDLL
                 {
                     byte[] fileBytes = new byte[8];
                     fileBytes[0] = (byte)Head_sum;
-                    bool Transmission_success = write_pic_server.Connection_write("192.168.1.107", "8888", fileBytes);
+                    bool Transmission_success = write_pic_server.Connection_write(ServerIPAddress,ServerPort, fileBytes);
 
                     if (Transmission_success)
                     {
@@ -75,7 +76,7 @@ namespace ServerDLL
                         fs.Read(fileBytes, 0, fileBytes.Length);
                         fs.Close();
                     }
-                    bool Transmission_success = write_pic_server.Connection_write("192.168.1.107", "8888", fileBytes);
+                    bool Transmission_success = write_pic_server.Connection_write(ServerIPAddress,ServerPort, fileBytes);
 
                     if (Transmission_success)
                     {

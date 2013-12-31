@@ -26,7 +26,7 @@ namespace ServerDLL
 
 
             int port = 0;
-            IPAddress myIP = IPAddress.Parse("192.168.1.107");
+            IPAddress myIP;
             client = new TcpClient(ipe);
             try
             {
@@ -53,7 +53,7 @@ namespace ServerDLL
                 using (netStream)
                 {
                     netStream.Write(fileBytes, 0, fileBytes.Length);
-                    //netStream.Dispose();
+                    netStream.Dispose();
                 }
                 return true;
             }

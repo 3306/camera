@@ -26,7 +26,7 @@ namespace ListenerDLL
         {
             try
             {
-                listener = new TcpListener(IPAddress.Parse("192.168.1.107"), 9999);
+                listener = new TcpListener(IPAddress.Parse("192.168.1.103"), 9999);
                 listener.Start();
                 Thread thread = new Thread(new ThreadStart(recieve));
                 thread.Start();
