@@ -22,6 +22,7 @@ namespace AsyTcpServer
         public ConcurrentDictionary<string,TcpClientImageState> clients;
        //唯一一个发送图片的ip
         public string IP_send_Image;
+        public string NameOfImageFromClient;
         public ConcurrentDictionary<string, TcpClientDefaultState> clients1;
 
         private bool disposed = false;
@@ -187,6 +188,7 @@ namespace AsyTcpServer
             string ChildDir = tcpClient.Client.RemoteEndPoint.ToString();
             ChildDir = ChildDir.Substring(0, ChildDir.LastIndexOf(":"));
             FilePath = FilePath +ChildDir+ Path.DirectorySeparatorChar;
+            NameOfImageFromClient = id;
             if (!Directory.Exists(FilePath))
             {
                 Directory.CreateDirectory(FilePath);
@@ -707,6 +709,8 @@ namespace AsyTcpServer
       this.Buffer = buffer;
       this.FileStream = fs;
       this.UpdateTime = updatetime;
+
+        
     }
 
     /// <summary>
@@ -728,5 +732,6 @@ namespace AsyTcpServer
     }
     public FileStream FileStream{get;private set;}
     public DateTime UpdateTime { get; private set;}
+
   }
 }

@@ -29,11 +29,13 @@
         private void InitializeComponent()
         {
             this.GetImage = new System.Windows.Forms.Button();
+            this.CurrentImage = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.CurrentImage)).BeginInit();
             this.SuspendLayout();
             // 
             // GetImage
             // 
-            this.GetImage.Location = new System.Drawing.Point(256, 24);
+            this.GetImage.Location = new System.Drawing.Point(12, 12);
             this.GetImage.Name = "GetImage";
             this.GetImage.Size = new System.Drawing.Size(91, 23);
             this.GetImage.TabIndex = 0;
@@ -41,14 +43,24 @@
             this.GetImage.UseVisualStyleBackColor = true;
             this.GetImage.Click += new System.EventHandler(this.GetImage_Click);
             // 
+            // CurrentImage
+            // 
+            this.CurrentImage.Location = new System.Drawing.Point(12, 41);
+            this.CurrentImage.Name = "CurrentImage";
+            this.CurrentImage.Size = new System.Drawing.Size(640, 480);
+            this.CurrentImage.TabIndex = 1;
+            this.CurrentImage.TabStop = false;
+            // 
             // OperateCamera
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(371, 298);
+            this.ClientSize = new System.Drawing.Size(665, 530);
+            this.Controls.Add(this.CurrentImage);
             this.Controls.Add(this.GetImage);
             this.Name = "OperateCamera";
             this.Text = "OperateCamera";
+            ((System.ComponentModel.ISupportInitialize)(this.CurrentImage)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -56,5 +68,6 @@
         #endregion
 
         private System.Windows.Forms.Button GetImage;
+        private System.Windows.Forms.PictureBox CurrentImage;
     }
 }
