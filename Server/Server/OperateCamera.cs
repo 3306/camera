@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using AsyTcpServer;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 
 namespace Server
 {
@@ -16,6 +17,9 @@ namespace Server
     {
         TcpClientDefaultState tcpClientState;
         AsyncTcpServer server;
+        private static string uid;
+        delegate void GetImageCallBack();
+        private static string CurrentIP;
         public OperateCamera(TcpClientDefaultState tcpClientState,AsyncTcpServer server)
         {
             InitializeComponent();
@@ -25,7 +29,7 @@ namespace Server
 
         private void GetImage_Click(object sender, EventArgs e)
         {
-            string CurrentIP = tcpClientState.TcpClient.Client.RemoteEndPoint.ToString().Substring(0,tcpClientState.TcpClient.Client.RemoteEndPoint.ToString().LastIndexOf(":"));
+            CurrentIP = tcpClientState.TcpClient.Client.RemoteEndPoint.ToString().Substring(0,tcpClientState.TcpClient.Client.RemoteEndPoint.ToString().LastIndexOf(":"));
             string operatingstr = "getImage";
             byte[] operatingbyte = System.Text.Encoding.Default.GetBytes(operatingstr);
             TcpClient tcpclient = new TcpClient();
@@ -34,8 +38,33 @@ namespace Server
             server.Send(tcpclient, operatingbyte);
             server.IP_send_Image = CurrentIP;
             //this.CurrentImage.Image = Image.FromFile(@System.Environment.CurrentDirectory + "\\pic\\" + CurrentIP + "\\2014-1-1 0-33-51.jpg");
-            //this.CurrentImage.Image = Image.FromFile(@System.Environment.CurrentDirectory+"\\pic\\"+CurrentIP+"\\"+server.NameOfImageFromClient+".jpg");
+            
+            server.ImageReceived += server_ImageReceived;
         }
-        
+
+        void server_ImageReceived(object sender, TcpImageReceivedEventArgs<string> e)
+        {
+            uid = e.uid;
+            //Thread a = new Thread(new ThreadStart(getimage));
+            //a.Start();
+            tcpClientState.TcpClient.Close();
+            this.CurrentImage.Image = Image.FromFile(@System.Environment.CurrentDirectory + "\\pic\\" + CurrentIP + "\\" + uid + ".jpg");
+        }
+
+        /*
+        private void getimage()
+        {
+            string CurrentIP = tcpClientState.TcpClient.Client.RemoteEndPoint.ToString().Substring(0, tcpClientState.TcpClient.Client.RemoteEndPoint.ToString().LastIndexOf(":"));
+            if (this.CurrentImage.InvokeRequired)
+            {
+                GetImageCallBack d = new GetImageCallBack(getimage);
+                this.Invoke(d,new object[] {});
+            }
+            else
+            {
+                this.CurrentImage.Image = Image.FromFile(@System.Environment.CurrentDirectory + "\\pic\\" + CurrentIP + "\\" + uid + ".jpg");
+            }
+        }
+         */ 
     }
 }

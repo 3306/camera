@@ -195,8 +195,7 @@ namespace AsyTcpServer
             FileStream fs = new FileStream(FilePath +uid + ".jpg", FileMode.Create);
            
             byte[] buffer = new byte[8];
-            TcpClientImageState internalClient = new TcpClientImageState(tcpClient, buffer,fs,timeID);
-
+            TcpClientImageState internalClient = new TcpClientImageState(tcpClient, buffer,fs,timeID,uid);
             //add client connection to cache
             string tcpClientKey = internalClient.TcpClient.Client.RemoteEndPoint.ToString();
             tcpClientKey = tcpClientKey.Substring(0,tcpClientKey.LastIndexOf(":"));
@@ -208,7 +207,7 @@ namespace AsyTcpServer
             
             ContinueReadBuffer(internalClient, networkStream);
 
-
+            
             //keep listening to accept next connection
             ContinueAcceptTcpClient(tcpListener);
             }
@@ -235,14 +234,7 @@ namespace AsyTcpServer
         {
             try
             {
-                   Stopwatch sw = new Stopwatch();
-                   sw.Start();
                    networkStream.BeginRead(internalClient.Buffer, 0, internalClient.Buffer.Length, HandleDatagramReceived, internalClient);
-                    sw.Stop();
-                    Console.WriteLine("总运行时间：" + sw.Elapsed);
-                    Console.WriteLine("测量实例得出的总运行时间（毫秒为单位）：" + sw.ElapsedMilliseconds);
-                    Console.WriteLine("总运行时间(计时器刻度标识)：" + sw.ElapsedTicks);
-                    Console.WriteLine("计时器是否运行：" + sw.IsRunning.ToString());
             }
             catch (ObjectDisposedException ex)
             {
@@ -254,15 +246,7 @@ namespace AsyTcpServer
         {   
             try
             {
-                Stopwatch sw = new Stopwatch();
-                sw.Start();
                 networkStream.BeginRead(internalClient.Buffer, 0, internalClient.Buffer.Length, HandleDatagramReceivedDefault, internalClient);
-                sw.Stop();
-                Console.WriteLine("总运行时间：" + sw.Elapsed);
-                Console.WriteLine("测量实例得出的总运行时间（毫秒为单位）：" + sw.ElapsedMilliseconds);
-                Console.WriteLine("总运行时间(计时器刻度标识)：" + sw.ElapsedTicks);
-                Console.WriteLine("计时器是否运行：" + sw.IsRunning.ToString());
-
             }
             catch (ObjectDisposedException ex)
             {
@@ -303,7 +287,7 @@ namespace AsyTcpServer
                    //    RaiseClientDisconnected(internalClient.TcpClient);
                    //}
                    internalClient.FileStream.Dispose();
-               
+                   RaiseImageReceived(internalClient.TcpClient, internalClient.uid.ToString());
                    return ;   
                 }
                 //received byte and trigger event notification
@@ -311,11 +295,11 @@ namespace AsyTcpServer
                 Buffer.BlockCopy(internalClient.Buffer,0,receivedBytes,0,numberOfReadBytes);
                 internalClient.FileStream.Write(internalClient.Buffer,0,internalClient.Buffer.Length);
                 RaiseDatagramReceived(internalClient.TcpClient, receivedBytes);
-                RaisePlaintextReceived(internalClient.TcpClient, receivedBytes);
+                //RaisePlaintextReceived(internalClient.TcpClient, receivedBytes);
 
                 // continue listening for tcp datagram packets
                 networStream.BeginRead(internalClient.Buffer,0,internalClient.Buffer.Length,HandleDatagramReceived,internalClient);
-              
+                
             
         }
         //处理分析后发送的人头数量
@@ -347,7 +331,7 @@ namespace AsyTcpServer
             //   {
              //      RaiseClientDisconnected(internalClient.TcpClient);
              //  }
-              //  internalClient.NetworkStream.Dispose();
+             //   internalClient.NetworkStream.Dispose();
                 return;
             }
             //received byte and trigger event notification
@@ -356,7 +340,7 @@ namespace AsyTcpServer
          
         //    internalClient.FileStream.Write(internalClient.Buffer, 0, internalClient.Buffer.Length);
 
-            RaiseDatagramReceived(internalClient.TcpClient, receivedBytes);
+            //RaiseDatagramReceived(internalClient.TcpClient, receivedBytes);
            // RaisePlaintextReceived(internalClient.TcpClient, receivedBytes);
 
             // continue listening for tcp datagram packets
@@ -371,6 +355,8 @@ namespace AsyTcpServer
         public event EventHandler<TcpDatagramReceivedEventArgs<byte[]>> DatagramReceived; 
         //接收到数据报文明文事件
         public event EventHandler<TcpDatagramReceivedEventArgs<string>> PlaintextReceived;
+        //图片接收完毕事件
+        public event EventHandler<TcpImageReceivedEventArgs<string>> ImageReceived;
 
         private void RaiseDatagramReceived(TcpClient sender, byte[] datagram)
         {
@@ -385,6 +371,14 @@ namespace AsyTcpServer
             if (PlaintextReceived != null)
             {
                 PlaintextReceived(this, new TcpDatagramReceivedEventArgs<string>(sender, this.Encoding.GetString(datagram, 0, datagram.Length)));
+            }
+        }
+
+        private void RaiseImageReceived(TcpClient sender, string uid)
+        {
+            if (ImageReceived != null)
+            {
+                ImageReceived(this, new TcpImageReceivedEventArgs<string>(sender, uid));
             }
         }
         //与客户端的连接已建立事件
@@ -673,6 +667,8 @@ namespace AsyTcpServer
 
             this.TcpClient = tcpClient;
             this.Buffer = buffer;
+   
+           
         }
 
         /// <summary>
@@ -711,7 +707,7 @@ namespace AsyTcpServer
     /// </summary>
     /// <param name="tcpClient">The TCP client</param>
     /// <param name="buffer">The byte array buffer</param>
-    public TcpClientImageState(TcpClient tcpClient, byte[] buffer,FileStream fs,DateTime updatetime)
+    public TcpClientImageState(TcpClient tcpClient, byte[] buffer,FileStream fs,DateTime updatetime,Guid uid)
     {
       if (tcpClient == null)
         throw new ArgumentNullException("tcpClient");
@@ -725,7 +721,7 @@ namespace AsyTcpServer
       this.Buffer = buffer;
       this.FileStream = fs;
       this.UpdateTime = updatetime;
-
+      this.uid = uid;
         
     }
 
@@ -748,6 +744,7 @@ namespace AsyTcpServer
     }
     public FileStream FileStream{get;private set;}
     public DateTime UpdateTime { get; private set;}
+    public Guid uid { get; private set; }
 
   }
 }

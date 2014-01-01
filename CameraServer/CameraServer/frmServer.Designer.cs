@@ -62,6 +62,7 @@
             // 
             // tSave
             // 
+            this.tSave.Interval = 1000;
             this.tSave.Tick += new System.EventHandler(this.tSave_Tick);
             // 
             // btnSave

@@ -12,7 +12,6 @@ using System.IO;
 using System.Threading;
 using System.Collections.Concurrent;
 using System.Net;
-using System.Net;
 
 namespace Server
 {
@@ -141,7 +140,7 @@ namespace Server
                         a.Click += delegate(Object o, EventArgs e) { check_Image(client.Key,client.Value); };
                         
                    //     a.Click += new EventHandler<TcpClientConnectedEventArgs>(check_Image);
-                        a.Width = 300;
+                        a.Width = 150;
                         a.Name = client.ToString();
                         a.Location = new  System.Drawing.Point(btn_x+itero, btn_y);
                         this.panel1.Controls.Add(a);

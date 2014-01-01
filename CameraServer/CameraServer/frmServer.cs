@@ -12,7 +12,7 @@ namespace CameraServer
     public partial class frmServer : Form
     {
      
-        private static  string str = "getNum";
+        private static  string str = "getImage";
        private  static    byte[] ControlCommand = System.Text.Encoding.Default.GetBytes(str);
         private   static ClassVedioCapture VC = new ClassVedioCapture();
         private static Listener listener;
@@ -48,14 +48,13 @@ namespace CameraServer
         private void Save()
         {
             VC.CopyToClipBorad();
-
-
             Save_send_countPeople.Save(VC.getCaptureImage(), ControlCommand);
         }
         private void btnSave_Click(object sender, EventArgs e)
         {
            
-            Save();
+            //Save();
+            this.tSave.Enabled = true;
         }
 
         private void btnBeginListen_Click(object sender, EventArgs e)

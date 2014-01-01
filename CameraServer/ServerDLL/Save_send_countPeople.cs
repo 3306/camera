@@ -21,7 +21,7 @@ namespace ServerDLL
             Encoder enc;
             EncoderParameter ep;
             EncoderParameters epa;
-            string ServerIPAddress = "192.168.1.107";
+            string ServerIPAddress = "192.168.1.100";
             string ServerPort = "8888";
             try
             {
