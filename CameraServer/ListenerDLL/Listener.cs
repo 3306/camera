@@ -22,11 +22,13 @@ namespace ListenerDLL
         private static string fileStr = Application.StartupPath + "\\test.jpg";
         private static bool control = false;
         private static Thread thread;
+        private static IPHostEntry IpEntry = Dns.GetHostEntry(Dns.GetHostName());
+        private static string myip = IpEntry.AddressList[2].ToString();
         public  bool beginListen()
         {
             try
             {
-                listener = new TcpListener(IPAddress.Parse("192.168.1.100"), 9999);
+                listener = new TcpListener(IPAddress.Parse(myip), 9999);
                 listener.Start();
                 Thread thread = new Thread(new ThreadStart(recieve));
                 thread.Start();
