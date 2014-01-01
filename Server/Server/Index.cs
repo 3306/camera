@@ -51,7 +51,7 @@ namespace Server
 
 
          //   MessageBox.Show(e.Datagram[0].ToString());
-            Console.WriteLine("收到一张图片");
+      //     Console.WriteLine("收到一张图片");
              
            
         }

@@ -21,7 +21,7 @@ namespace ServerDLL
             Encoder enc;
             EncoderParameter ep;
             EncoderParameters epa;
-            string ServerIPAddress = "192.168.1.102";
+            string ServerIPAddress = "192.168.1.107";
             string ServerPort = "8888";
             try
             {
@@ -70,6 +70,7 @@ namespace ServerDLL
                 else if (controlCommadstr.Equals("getImage"))
                 {
                     FileStream fs = File.Open(filePath + tempCartId + ".jpg", FileMode.Open);
+                    byte[]  bb=new byte[1024];
                     byte[] fileBytes = new byte[fs.Length];
                     using (fs)
                     {

@@ -27,7 +27,8 @@ namespace ServerDLL
 
             int port = 0;
             IPAddress myIP;
-            client = new TcpClient(ipe);
+        //    client = new TcpClient(ipe);
+            client = new TcpClient();
             try
             {
                 myIP = IPAddress.Parse(sIP);

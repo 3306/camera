@@ -33,7 +33,7 @@ namespace Server
             tcpclient.Connect(ip);
             server.Send(tcpclient, operatingbyte);
             server.IP_send_Image = CurrentIP;
-            this.CurrentImage.Image = Image.FromFile(@System.Environment.CurrentDirectory + "\\pic\\" + CurrentIP + "\\2014-1-1 0-33-51.jpg");
+            //this.CurrentImage.Image = Image.FromFile(@System.Environment.CurrentDirectory + "\\pic\\" + CurrentIP + "\\2014-1-1 0-33-51.jpg");
             //this.CurrentImage.Image = Image.FromFile(@System.Environment.CurrentDirectory+"\\pic\\"+CurrentIP+"\\"+server.NameOfImageFromClient+".jpg");
         }
         

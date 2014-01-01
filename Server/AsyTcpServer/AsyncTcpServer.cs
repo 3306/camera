@@ -8,9 +8,7 @@ using System.Net.Sockets;
 using System.IO;
 using System.ComponentModel;
 using System.Threading;
-
-
-
+using System.Diagnostics;
 namespace AsyTcpServer
 {
     public class AsyncTcpServer : IDisposable
@@ -149,7 +147,7 @@ namespace AsyTcpServer
         /// <param name="ar"></param>
         private void HandleTcpClientAccepted(IAsyncResult ar)
         {
-            
+            DateTime timeID = DateTime.Now;
             if (!IsRunning) return;
             TcpListener tcpListener = (TcpListener)ar.AsyncState;
             TcpClient tcpClient = tcpListener.EndAcceptTcpClient(ar);
@@ -178,11 +176,12 @@ namespace AsyTcpServer
 
                 //keep listening to accept next connection
                 ContinueAcceptTcpClient(tcpListener);
-
+            
             }
            //处理发来的图片字节
             else {
-            DateTime timeID = DateTime .Now;
+        //    DateTime timeID = DateTime .Now;
+                Guid uid = Guid.NewGuid();
             string id = timeID.ToString().Replace("/","-").Replace(":","-");
             string FilePath = System.Environment.CurrentDirectory + "\\pic\\";
             string ChildDir = tcpClient.Client.RemoteEndPoint.ToString();
@@ -193,7 +192,7 @@ namespace AsyTcpServer
             {
                 Directory.CreateDirectory(FilePath);
             }
-            FileStream fs = new FileStream(FilePath + id + ".jpg", FileMode.Create);
+            FileStream fs = new FileStream(FilePath +uid + ".jpg", FileMode.Create);
            
             byte[] buffer = new byte[8];
             TcpClientImageState internalClient = new TcpClientImageState(tcpClient, buffer,fs,timeID);
@@ -236,7 +235,14 @@ namespace AsyTcpServer
         {
             try
             {
-                    networkStream.BeginRead(internalClient.Buffer, 0, internalClient.Buffer.Length, HandleDatagramReceived, internalClient); 
+                   Stopwatch sw = new Stopwatch();
+                   sw.Start();
+                   networkStream.BeginRead(internalClient.Buffer, 0, internalClient.Buffer.Length, HandleDatagramReceived, internalClient);
+                    sw.Stop();
+                    Console.WriteLine("总运行时间：" + sw.Elapsed);
+                    Console.WriteLine("测量实例得出的总运行时间（毫秒为单位）：" + sw.ElapsedMilliseconds);
+                    Console.WriteLine("总运行时间(计时器刻度标识)：" + sw.ElapsedTicks);
+                    Console.WriteLine("计时器是否运行：" + sw.IsRunning.ToString());
             }
             catch (ObjectDisposedException ex)
             {
@@ -248,7 +254,15 @@ namespace AsyTcpServer
         {   
             try
             {
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
                 networkStream.BeginRead(internalClient.Buffer, 0, internalClient.Buffer.Length, HandleDatagramReceivedDefault, internalClient);
+                sw.Stop();
+                Console.WriteLine("总运行时间：" + sw.Elapsed);
+                Console.WriteLine("测量实例得出的总运行时间（毫秒为单位）：" + sw.ElapsedMilliseconds);
+                Console.WriteLine("总运行时间(计时器刻度标识)：" + sw.ElapsedTicks);
+                Console.WriteLine("计时器是否运行：" + sw.IsRunning.ToString());
+
             }
             catch (ObjectDisposedException ex)
             {
@@ -261,6 +275,7 @@ namespace AsyTcpServer
         /// <param name="ar"></param>
         private void HandleDatagramReceived(IAsyncResult ar)
         {
+           
             if (!IsRunning) return;
                 
                 
@@ -300,6 +315,7 @@ namespace AsyTcpServer
 
                 // continue listening for tcp datagram packets
                 networStream.BeginRead(internalClient.Buffer,0,internalClient.Buffer.Length,HandleDatagramReceived,internalClient);
+              
             
         }
         //处理分析后发送的人头数量

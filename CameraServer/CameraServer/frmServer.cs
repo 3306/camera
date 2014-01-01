@@ -71,8 +71,8 @@ namespace CameraServer
 
         private void listener_ControReceive(object sender, TcpDatagramReceivedEventArgs<byte[]> e) {
             ControlCommand = e.Datagram;
-            VC.CopyToClipBorad();
-            Save_send_countPeople.Save(VC.getCaptureImage(), ControlCommand);
+      //      VC.CopyToClipBorad();
+        //    Save_send_countPeople.Save(VC.getCaptureImage(), ControlCommand);
         }
 
         private void btnEndListen_Click(object sender, EventArgs e)
