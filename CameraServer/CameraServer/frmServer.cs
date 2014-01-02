@@ -9,10 +9,12 @@ using ListenerDLL;
 using System.Drawing.Imaging;
 using System.Timers;
 using System.Threading;
+using  System.Timers;
 namespace CameraServer
 {
     public partial class frmServer : Form
     {
+        private static   System.Timers.Timer timer = new System.Timers.Timer(1000);
         private static  string str = "getImage";
        private  static    byte[] ControlCommand = System.Text.Encoding.Default.GetBytes(str);
         private   static ClassVedioCapture VC = new ClassVedioCapture();
@@ -49,12 +51,12 @@ namespace CameraServer
         }
     
         private void listener_ControReceive(object sender, TcpDatagramReceivedEventArgs<byte[]> e) {
-            
+             
             ControlCommand = e.Datagram;
             if (!System.Text.Encoding.Default.GetString(e.Datagram).Equals("getImage"))
             {  
                 int   speed = int.Parse(System.Text.Encoding.Default.GetString(e.Datagram));
-                System.Timers.Timer timer = new System.Timers.Timer(speed);
+                timer.Interval = speed;
                 timer.Elapsed += new ElapsedEventHandler(OnTimedEvent);
                 timer.Enabled = true;
             }
