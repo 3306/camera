@@ -21,6 +21,8 @@ namespace Server
         private static string uid;
         delegate void GetImageCallBack();
         private static string CurrentIP;
+        delegate void showfacenumcallback();
+        double facenum;
         public OperateCamera(TcpClientImageState  tcpClientState,AsyncTcpServer server)
         {
             InitializeComponent();
@@ -46,10 +48,28 @@ namespace Server
         void server_ImageReceived(object sender, TcpImageReceivedEventArgs<string> e)
         {
             uid = e.uid;
-            //Thread a = new Thread(new ThreadStart(getimage));
-            //a.Start();
+            
             tcpClientState.TcpClient.Close();
             this.CurrentImage.Image = Image.FromFile(@System.Environment.CurrentDirectory + "\\pic\\" + CurrentIP + "\\" + uid + ".jpg");
+            FaceDetection a = new FaceDetection();
+            facenum= a.HeadCounting(System.Environment.CurrentDirectory + "\\pic\\" + CurrentIP + "\\" + uid + ".jpg");
+            Thread b = new Thread(new ThreadStart(showfacenum));
+            b.Start();
+            
+
+        }
+
+        private void showfacenum()
+        {
+            if (this.facenum_label.InvokeRequired)
+            {
+                showfacenumcallback d = new showfacenumcallback(showfacenum);
+                this.Invoke(d, new object[] { });
+            }
+            else
+            {
+                this.facenum_label.Text = facenum.ToString();
+            }
         }
 
         private void SetCameraSpeed_Click(object sender, EventArgs e)
