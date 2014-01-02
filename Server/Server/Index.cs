@@ -38,46 +38,52 @@ namespace Server
             server.DatagramReceived += new EventHandler<TcpDatagramReceivedEventArgs<byte[]>>(server_DatagramReceived);
             server.Start();
             Print("服务器已启动");
-            //while (true)
-            //{
-                
-            //}
-            
         }
-
+        /// <summary>
+        /// 接收数据时引发的事件回调
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private  void server_DatagramReceived(object sender, TcpDatagramReceivedEventArgs<byte[]> e)
-        {
-
-
-         //   MessageBox.Show(e.Datagram[0].ToString());
-      //     Console.WriteLine("收到一张图片");
-             
+        {    
            
         }
+        /// <summary>
+        /// 用户断开连接时引发的事件回调
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private  void server_ClientDisconnected(object sender, TcpClientDisconnectEventArgs e)
         {
-           
+           /*
             MessageBox.Show("已经下线");
             string a = e.TcpClient.Client.RemoteEndPoint.ToString();
             a = a.Substring(0, a.LastIndexOf(":"));
             ThreadWithState q = new ThreadWithState(a);
             Thread t = new Thread(new ThreadStart(q.handleclientdisconnected));
             t.Start();
-          
+            */
         }
-
+        /// <summary>
+        /// 有用户连接时引发的事件回调
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         public  void server_ClientConnected(object sender, TcpClientConnectedEventArgs e)
         {
-            //Thread a = new Thread(new ThreadStart(updateclient));
-           // a.Start();
+            Thread a = new Thread(new ThreadStart(updateclient));
+            a.Start();
             //MessageBox.Show("已经上线" + ClientCount);
             
         }
-
+        /// <summary>
+        /// 启动监听的按钮事件
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button1_Click(object sender, EventArgs e)
         {
-            StartTheServer();
-            this.button1.Enabled = false;
+            
          
            
         }
@@ -126,7 +132,7 @@ namespace Server
                 foreach (var client in server.clients1)
                 {
                     
-                    itero +=100;
+                    
                     if (this.panel1.InvokeRequired)
                     {
                         updateclientcallback d = new updateclientcallback(updateclient);
@@ -135,19 +141,20 @@ namespace Server
                     else
                     {
                         Button a = new Button();
-                        string aa = client.Key.ToString() + "点的人数是" + client.Value.Buffer[0];
+                       // string aa = client.Key.ToString() + "点的人数是" + client.Value.Buffer[0];
+                        string aa = client.Key.ToString();
                         a.Text = aa;
-                        a.Click += delegate(Object o, EventArgs e) { check_Image(client.Key,client.Value); };
-                        
-                   //     a.Click += new EventHandler<TcpClientConnectedEventArgs>(check_Image);
-                        a.Width = 150;
+                        a.Click += delegate(Object o, EventArgs e) { check_Image(client.Key,client.Value); }; 
+                      //a.Click += new EventHandler<TcpClientConnectedEventArgs>(check_Image);
+                        a.Width = 100;
                         a.Name = client.ToString();
                         a.Location = new  System.Drawing.Point(btn_x+itero, btn_y);
                         this.panel1.Controls.Add(a);
+                        
                     }
-                    
-               
+                    itero += 100;      
             }
+
         }
 
         public class ThreadWithState {
@@ -179,6 +186,22 @@ namespace Server
                     }
                 }
             }
+        }
+
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void groupBox2_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Index_Load(object sender, EventArgs e)
+        {
+            StartTheServer();
+            this.button1.Enabled = false;
         }
 
     }

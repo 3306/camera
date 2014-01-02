@@ -158,6 +158,7 @@ namespace AsyTcpServer
             //有待观察
             Boolean Image_or_Num = ip.Equals(IP_send_Image);
             if (!Image_or_Num)
+            //if(false)
             {
                 byte[] buffer = new byte[8];
                 TcpClientDefaultState internalClient = new TcpClientDefaultState(tcpClient, buffer);
@@ -166,7 +167,7 @@ namespace AsyTcpServer
                 tcpClientKey = tcpClientKey.Substring(0, tcpClientKey.LastIndexOf(":"));
             
                 clients1.AddOrUpdate(tcpClientKey, internalClient, (n, o) => { return internalClient; });
-                RaiseClientConnected(tcpClient);
+                 RaiseClientConnected(tcpClient);
 
                 //begin to read data
                 NetworkStream networkStream = internalClient.NetworkStream;
@@ -180,8 +181,9 @@ namespace AsyTcpServer
             }
            //处理发来的图片字节
             else {
+             
         //    DateTime timeID = DateTime .Now;
-                Guid uid = Guid.NewGuid();
+            Guid uid = Guid.NewGuid();
             string id = timeID.ToString().Replace("/","-").Replace(":","-");
             string FilePath = System.Environment.CurrentDirectory + "\\pic\\";
             string ChildDir = tcpClient.Client.RemoteEndPoint.ToString();
@@ -200,6 +202,7 @@ namespace AsyTcpServer
             string tcpClientKey = internalClient.TcpClient.Client.RemoteEndPoint.ToString();
             tcpClientKey = tcpClientKey.Substring(0,tcpClientKey.LastIndexOf(":"));
             clients.AddOrUpdate(tcpClientKey, internalClient, (n, o) => { return internalClient; });
+            clients1.AddOrUpdate(tcpClientKey, internalClient, (n, o) => { return internalClient; });
             RaiseClientConnected(tcpClient);
 
             //begin to read data

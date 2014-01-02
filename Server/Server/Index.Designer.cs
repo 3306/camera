@@ -32,11 +32,15 @@
             this.Console_rbx = new System.Windows.Forms.RichTextBox();
             this.button2 = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(312, 433);
+            this.button1.Location = new System.Drawing.Point(179, 433);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(129, 44);
             this.button1.TabIndex = 0;
@@ -48,16 +52,16 @@
             // 
             this.Console_rbx.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.Console_rbx.Enabled = false;
-            this.Console_rbx.Location = new System.Drawing.Point(12, 12);
+            this.Console_rbx.Location = new System.Drawing.Point(6, 20);
             this.Console_rbx.Name = "Console_rbx";
             this.Console_rbx.ReadOnly = true;
-            this.Console_rbx.Size = new System.Drawing.Size(173, 393);
+            this.Console_rbx.Size = new System.Drawing.Size(191, 359);
             this.Console_rbx.TabIndex = 1;
             this.Console_rbx.Text = "";
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(502, 433);
+            this.button2.Location = new System.Drawing.Point(472, 433);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(97, 44);
             this.button2.TabIndex = 2;
@@ -67,23 +71,47 @@
             // 
             // panel1
             // 
-            this.panel1.Location = new System.Drawing.Point(270, 21);
+            this.panel1.Location = new System.Drawing.Point(6, 20);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(969, 406);
+            this.panel1.Size = new System.Drawing.Size(500, 359);
             this.panel1.TabIndex = 3;
-          //  this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
+            this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.panel1);
+            this.groupBox1.Location = new System.Drawing.Point(221, 12);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(512, 393);
+            this.groupBox1.TabIndex = 4;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "客户端显示区";
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.Console_rbx);
+            this.groupBox2.Location = new System.Drawing.Point(12, 12);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(203, 393);
+            this.groupBox2.TabIndex = 5;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "服务器控制台";
+            this.groupBox2.Enter += new System.EventHandler(this.groupBox2_Enter);
             // 
             // Index
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1251, 489);
-            this.Controls.Add(this.panel1);
+            this.ClientSize = new System.Drawing.Size(745, 489);
+            this.Controls.Add(this.groupBox2);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.button2);
-            this.Controls.Add(this.Console_rbx);
             this.Controls.Add(this.button1);
             this.Name = "Index";
             this.Text = "Form1";
+            this.Load += new System.EventHandler(this.Index_Load);
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -94,6 +122,8 @@
         private System.Windows.Forms.RichTextBox Console_rbx;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox groupBox2;
     }
 }
 
