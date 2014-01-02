@@ -104,7 +104,7 @@ namespace Server
         }
 
 
-        private void check_Image(string  ip,TcpClientDefaultState tcpClientState)
+        private void check_Image(string  ip,TcpClientImageState tcpClientState)
         {
             OperateCamera cameraform = new OperateCamera(tcpClientState, server);
             cameraform.Show();
@@ -125,11 +125,11 @@ namespace Server
         private void updateclient()
         {
             itero = 0;
-                if (server.clients1.Keys == null)
+                if (server.clients.Keys == null)
                 {
                     return;
                 }
-                foreach (var client in server.clients1)
+                foreach (var client in server.clients)
                 {
                     
                     

@@ -73,9 +73,8 @@ namespace AsyTcpServer
             Address = localIPAddress;
             Port = listenPort;
             this.Encoding = Encoding.Default;
-            clients1 = new ConcurrentDictionary<string, TcpClientDefaultState>();
+            //clients1 = new ConcurrentDictionary<string, TcpClientDefaultState>();
             clients = new ConcurrentDictionary<string, TcpClientImageState>();
-
             listener = new TcpListener(Address, Port);
             listener.AllowNatTraversal(true);
         }
@@ -152,11 +151,9 @@ namespace AsyTcpServer
             TcpListener tcpListener = (TcpListener)ar.AsyncState;
             TcpClient tcpClient = tcpListener.EndAcceptTcpClient(ar);
             if (!tcpClient.Connected) return;
-            //创建文件流
-            //处理发来的分析后的图片中包含的人头数量
             string ip = tcpClient.Client.RemoteEndPoint.ToString().Substring(0,tcpClient.Client.RemoteEndPoint.ToString().LastIndexOf(":"));
-            //有待观察
-            Boolean Image_or_Num = ip.Equals(IP_send_Image);
+           // Boolean Image_or_Num = ip.Equals(IP_send_Image);
+           /*
             if (!Image_or_Num)
             //if(false)
             {
@@ -181,7 +178,7 @@ namespace AsyTcpServer
             }
            //处理发来的图片字节
             else {
-             
+             */
         //    DateTime timeID = DateTime .Now;
             Guid uid = Guid.NewGuid();
             string id = timeID.ToString().Replace("/","-").Replace(":","-");
@@ -202,18 +199,14 @@ namespace AsyTcpServer
             string tcpClientKey = internalClient.TcpClient.Client.RemoteEndPoint.ToString();
             tcpClientKey = tcpClientKey.Substring(0,tcpClientKey.LastIndexOf(":"));
             clients.AddOrUpdate(tcpClientKey, internalClient, (n, o) => { return internalClient; });
-            clients1.AddOrUpdate(tcpClientKey, internalClient, (n, o) => { return internalClient; });
+           // clients1.AddOrUpdate(tcpClientKey, internalClient, (n, o) => { return internalClient; });
             RaiseClientConnected(tcpClient);
-
             //begin to read data
-            NetworkStream networkStream = internalClient.NetworkStream;
-            
-            ContinueReadBuffer(internalClient, networkStream);
-
-            
+            NetworkStream networkStream = internalClient.NetworkStream;          
+            ContinueReadBuffer(internalClient, networkStream);          
             //keep listening to accept next connection
             ContinueAcceptTcpClient(tcpListener);
-            }
+            
             
         }
         private void ContinueAcceptTcpClient(TcpListener tcpListener)

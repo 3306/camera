@@ -16,12 +16,12 @@ namespace Server
 {
     public partial class OperateCamera : Form
     {
-        TcpClientDefaultState tcpClientState;
+        TcpClientImageState tcpClientState;
         AsyncTcpServer server;
         private static string uid;
         delegate void GetImageCallBack();
         private static string CurrentIP;
-        public OperateCamera(TcpClientDefaultState tcpClientState,AsyncTcpServer server)
+        public OperateCamera(TcpClientImageState  tcpClientState,AsyncTcpServer server)
         {
             InitializeComponent();
             this.tcpClientState = tcpClientState;
