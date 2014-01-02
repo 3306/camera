@@ -14,7 +14,7 @@ namespace ListenerDLL
         private static int port;//新加的
         private static Socket sock;//新加的
         private static TcpClient tcpclient;
-        private static  byte[] by = new byte[8];
+       
         private static int number;//新加的大师大师
         private static int j;//新加的
         private static TcpListener listener;//新加的
@@ -31,7 +31,7 @@ namespace ListenerDLL
                 listener = new TcpListener(IPAddress.Parse(myip), 9999);
                 listener.Start();
                 Thread thread = new Thread(new ThreadStart(recieve));
-                thread.Start();
+                 thread.Start();
                 return true;
             }
             catch (Exception ee)
@@ -59,15 +59,13 @@ namespace ListenerDLL
         }
         private  void recieve()
         {
-            //CheckForIllegalCrossThreadCalls
-            //System.Windows.Forms.Control.CheckForIllegalCrossThreadCalls = false;//在线程中调用控件
-
             try
             {
                 while (true)
                 {
                     tcpclient = listener.AcceptTcpClient();
                     NetworkStream ns = tcpclient.GetStream();
+                    byte[] by = new byte[8];
                     ns.Read(by, 0, by.Length);
                     string str = System.Text.Encoding.Default.GetString(by);
                     RaiseControlReceived(tcpclient, by);

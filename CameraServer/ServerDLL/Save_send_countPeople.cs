@@ -50,7 +50,8 @@ namespace ServerDLL
                 int   Head_sum = (int)face_detection.HeadCounting(filePath + tempCartId + ".jpg");
          //       MessageBox.Show(Head_sum.ToString());
                 //发送的为分析后的图片中人头数量
-                if (controlCommadstr.Equals("getNum"))
+            //    if (controlCommadstr.Equals("getNum"))
+                if(false)
                 {
                     byte[] fileBytes = new byte[8];
                     fileBytes[0] = (byte)Head_sum;
@@ -67,7 +68,8 @@ namespace ServerDLL
                     }
                 }
                 //发送的为图片字节流
-                else if (controlCommadstr.Equals("getImage"))
+         //       else if (controlCommadstr.Equals("getImage"))
+                if(true)
                 {
                     FileStream fs = File.Open(filePath + tempCartId + ".jpg", FileMode.Open);
                     byte[]  bb=new byte[1024];
@@ -93,8 +95,6 @@ namespace ServerDLL
                 
                 }
                 image.Dispose();
-
-             
             }
             catch (Exception ex)
             {
