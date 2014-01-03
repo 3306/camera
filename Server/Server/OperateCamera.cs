@@ -39,7 +39,6 @@ namespace Server
             IPEndPoint ip = new IPEndPoint(IPAddress.Parse(CurrentIP), 9999);
             tcpclient.Connect(ip);
             server.Send(tcpclient, operatingbyte);
-            server.IP_send_Image = CurrentIP;
             //this.CurrentImage.Image = Image.FromFile(@System.Environment.CurrentDirectory + "\\pic\\" + CurrentIP + "\\2014-1-1 0-33-51.jpg");
             
             server.ImageReceived += server_ImageReceived;
@@ -50,7 +49,16 @@ namespace Server
             uid = e.uid;
             
             tcpClientState.TcpClient.Close();
-            this.CurrentImage.Image = Image.FromFile(@System.Environment.CurrentDirectory + "\\pic\\" + CurrentIP + "\\" + uid + ".jpg");
+            try
+            { 
+
+                this.CurrentImage.Image = Image.FromFile(@System.Environment.CurrentDirectory + "\\pic\\" + CurrentIP + "\\" + uid + ".jpg");
+                //MessageBox.Show(System.Environment.CurrentDirectory + "\\pic\\" + CurrentIP + "\\" + uid + ".jpg");
+            }
+            catch(FieldAccessException ex)
+            {
+
+            }
             FaceDetection a = new FaceDetection();
             facenum= a.HeadCounting(System.Environment.CurrentDirectory + "\\pic\\" + CurrentIP + "\\" + uid + ".jpg");
             Thread b = new Thread(new ThreadStart(showfacenum));

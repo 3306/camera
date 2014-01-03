@@ -22,7 +22,7 @@ namespace AsyTcpServer
         public string IP_send_Image;
         public string NameOfImageFromClient;
         public ConcurrentDictionary<string, TcpClientDefaultState> clients1;
-
+        
         private bool disposed = false;
         
         #endregion
@@ -73,8 +73,9 @@ namespace AsyTcpServer
             Address = localIPAddress;
             Port = listenPort;
             this.Encoding = Encoding.Default;
-            //clients1 = new ConcurrentDictionary<string, TcpClientDefaultState>();
+            clients1 = new ConcurrentDictionary<string, TcpClientDefaultState>();
             clients = new ConcurrentDictionary<string, TcpClientImageState>();
+
             listener = new TcpListener(Address, Port);
             listener.AllowNatTraversal(true);
         }
@@ -179,31 +180,30 @@ namespace AsyTcpServer
            //处理发来的图片字节
             else {
              */
-        //    DateTime timeID = DateTime .Now;
-            Guid uid = Guid.NewGuid();
-            string id = timeID.ToString().Replace("/","-").Replace(":","-");
+            Guid uid = Guid.NewGuid();   
             string FilePath = System.Environment.CurrentDirectory + "\\pic\\";
             string ChildDir = tcpClient.Client.RemoteEndPoint.ToString();
             ChildDir = ChildDir.Substring(0, ChildDir.LastIndexOf(":"));
             FilePath = FilePath +ChildDir+ Path.DirectorySeparatorChar;
-            NameOfImageFromClient = id;
             if (!Directory.Exists(FilePath))
             {
                 Directory.CreateDirectory(FilePath);
             }
-            FileStream fs = new FileStream(FilePath +uid + ".jpg", FileMode.Create);
-           
+            FileStream fs = new FileStream(FilePath +uid + ".jpg", FileMode.Create);          
             byte[] buffer = new byte[8];
             TcpClientImageState internalClient = new TcpClientImageState(tcpClient, buffer,fs,timeID,uid);
             //add client connection to cache
             string tcpClientKey = internalClient.TcpClient.Client.RemoteEndPoint.ToString();
             tcpClientKey = tcpClientKey.Substring(0,tcpClientKey.LastIndexOf(":"));
             clients.AddOrUpdate(tcpClientKey, internalClient, (n, o) => { return internalClient; });
-           // clients1.AddOrUpdate(tcpClientKey, internalClient, (n, o) => { return internalClient; });
             RaiseClientConnected(tcpClient);
+
             //begin to read data
-            NetworkStream networkStream = internalClient.NetworkStream;          
-            ContinueReadBuffer(internalClient, networkStream);          
+            NetworkStream networkStream = internalClient.NetworkStream;
+           
+            ContinueReadBuffer(internalClient, networkStream);
+
+            
             //keep listening to accept next connection
             ContinueAcceptTcpClient(tcpListener);
             
@@ -283,7 +283,13 @@ namespace AsyTcpServer
                    //    RaiseClientDisconnected(internalClient.TcpClient);
                    //}
                    internalClient.FileStream.Dispose();
-                   RaiseImageReceived(internalClient.TcpClient, internalClient.uid.ToString());
+                   string CurrentIP = internalClient.TcpClient.Client.RemoteEndPoint.ToString();
+                   CurrentIP = CurrentIP.Substring(0, CurrentIP.LastIndexOf(":"));
+                   if (CurrentIP == IP_send_Image)
+                   {
+                       RaiseImageReceived(internalClient.TcpClient, internalClient.uid.ToString());
+                   }
+                   
                    return ;   
                 }
                 //received byte and trigger event notification
@@ -354,7 +360,7 @@ namespace AsyTcpServer
         //图片接收完毕事件
         public event EventHandler<TcpImageReceivedEventArgs<string>> ImageReceived;
 
-        private void RaiseDatagramReceived(TcpClient sender, byte[] datagram)
+        private void RaiseDatagramReceived(TcpClient sender,byte[] datagram)
         {
             if (DatagramReceived != null)
             {

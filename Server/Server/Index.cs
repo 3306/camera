@@ -110,7 +110,7 @@ namespace Server
             cameraform.Show();
             //server.printclient();        
            // server.clients.Clear();
-           // server.IP_send_Image=ip.ToString();
+            server.IP_send_Image=ip.ToString();
             //string optionsstr = "";
 
            // byte[] tag = new byte[8];
@@ -187,12 +187,6 @@ namespace Server
                 }
             }
         }
-
-        private void panel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
         private void groupBox2_Enter(object sender, EventArgs e)
         {
 
