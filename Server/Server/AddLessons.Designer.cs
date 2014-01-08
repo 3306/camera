@@ -43,6 +43,8 @@
             this.EndTime = new System.Windows.Forms.ComboBox();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
+            this.label7 = new System.Windows.Forms.Label();
+            this.NumShouldBe = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // label1
@@ -171,7 +173,7 @@
             // button1
             // 
             this.button1.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.button1.Location = new System.Drawing.Point(22, 341);
+            this.button1.Location = new System.Drawing.Point(12, 457);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(114, 42);
             this.button1.TabIndex = 3;
@@ -182,23 +184,42 @@
             // button2
             // 
             this.button2.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.button2.Location = new System.Drawing.Point(169, 341);
+            this.button2.Location = new System.Drawing.Point(185, 457);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(114, 42);
             this.button2.TabIndex = 3;
             this.button2.Text = "取消";
             this.button2.UseVisualStyleBackColor = true;
             // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label7.Location = new System.Drawing.Point(31, 331);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(74, 21);
+            this.label7.TabIndex = 0;
+            this.label7.Text = "应到人数";
+            // 
+            // NumShouldBe
+            // 
+            this.NumShouldBe.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.NumShouldBe.Location = new System.Drawing.Point(118, 331);
+            this.NumShouldBe.Name = "NumShouldBe";
+            this.NumShouldBe.Size = new System.Drawing.Size(150, 29);
+            this.NumShouldBe.TabIndex = 1;
+            // 
             // AddLessons
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(307, 410);
+            this.ClientSize = new System.Drawing.Size(311, 511);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.Weekday);
             this.Controls.Add(this.EndTime);
             this.Controls.Add(this.BeginTime);
+            this.Controls.Add(this.NumShouldBe);
             this.Controls.Add(this.LessonName);
             this.Controls.Add(this.LessonID);
             this.Controls.Add(this.label6);
@@ -206,6 +227,7 @@
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label9);
             this.Controls.Add(this.label4);
+            this.Controls.Add(this.label7);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
@@ -234,5 +256,7 @@
         private System.Windows.Forms.ComboBox EndTime;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.TextBox NumShouldBe;
     }
 }

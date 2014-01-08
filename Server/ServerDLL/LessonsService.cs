@@ -14,7 +14,7 @@ namespace ServerDLL
             int successNo = 0;
             DBHelper dbhelper = new DBHelper();
             SqlCommand cmd = new SqlCommand();
-            string cmdstr = "insert Lessons (lessonID,lessonname,weekday,begintime,endtime) values('" + LesModel.lessonID + "','" + LesModel.lessonname + "','" + LesModel.weekday + "','" + LesModel.begintime + "','" + LesModel.endtime + "')";
+            string cmdstr = "insert Lessons (lessonID,lessonname,weekday,begintime,endtime,numshouldbe) values('" + LesModel.lessonID + "','" + LesModel.lessonname + "','" + LesModel.weekday + "','" + LesModel.begintime + "','" + LesModel.endtime + "','"+LesModel.numshouldbe+"')";
             cmd.Connection = dbhelper.connection;
             cmd.CommandText = cmdstr;
             try
@@ -36,21 +36,26 @@ namespace ServerDLL
             }
             return successNo;
         }
-        public string GetLessonID(int weekday, string begintime, string endtime)
+        public Lessons GetLessonInfo(string weekday, string begintime, string endtime)
         {
-            string lessonID = "";
+            Lessons lesson = new Lessons();
             DBHelper dbhelp = new DBHelper();
             SqlCommand cmd = new SqlCommand();
-            string cmdstr= "select lessonname le from Lessons where weekday = '"+weekday+"' and  '"+begintime+"' and '"+endtime+"'";
+            cmd.Connection = dbhelp.connection;
+
+            string cmdstr= "select * from Lessons where weekday = '"+weekday+"' and  begintime='"+begintime+"' and endtime= '"+endtime+"'";
+            cmd.CommandText = cmdstr;
             try
             {
                 cmd.Connection.Open();
                 SqlDataReader dr = cmd.ExecuteReader();
                 if (dr.Read())
                 {
-                    lessonID = dr.GetString(0);
+                    lesson.lessonname = dr.GetString(5);
+                    lesson.lessonID = dr.GetInt32(1);
+                    lesson.numshouldbe = dr.GetInt32(6);
                 }
-                return lessonID;
+                return lesson;
             }
             catch (SqlException e)
             {

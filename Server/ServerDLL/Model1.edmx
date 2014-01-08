@@ -18,7 +18,7 @@
           <Property Name="classroomID" Type="nvarchar" Nullable="false" MaxLength="50" />
           <Property Name="numshouldbe" Type="int" Nullable="false" />
           <Property Name="numrealbe" Type="int" />
-          <Property Name="lessonID" Type="int" Nullable="false" />
+          <Property Name="lessonname" Type="nvarchar" Nullable="false" MaxLength="50" />
           <Property Name="checktime" Type="datetime" />
         </EntityType>
         <EntityType Name="Classroom">
@@ -35,7 +35,7 @@
           </Key>
           <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
           <Property Name="lessonID" Type="int" Nullable="false" />
-          <Property Name="weekday" Type="int" Nullable="false" />
+          <Property Name="weekday" Type="nvarchar" Nullable="false" MaxLength="50" />
           <Property Name="begintime" Type="nvarchar" Nullable="false" MaxLength="50" />
           <Property Name="endtime" Type="nvarchar" Nullable="false" MaxLength="50" />
           <Property Name="lessonname" Type="nvarchar" Nullable="false" MaxLength="50" />
@@ -46,7 +46,7 @@
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="SchoolMonitorModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
-        <EntityContainer Name="SchoolMonitorEntities2" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="SchoolMonitorEntities4" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="CheckLessons" EntityType="SchoolMonitorModel.CheckLessons" />
           <EntitySet Name="Classroom" EntityType="SchoolMonitorModel.Classroom" />
           <EntitySet Name="Lessons" EntityType="SchoolMonitorModel.Lessons" />
@@ -59,7 +59,7 @@
           <Property Name="classroomID" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
           <Property Name="numshouldbe" Type="Int32" Nullable="false" />
           <Property Name="numrealbe" Type="Int32" />
-          <Property Name="lessonID" Type="Int32" Nullable="false" />
+          <Property Name="lessonname" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
           <Property Name="checktime" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="Classroom">
@@ -76,7 +76,7 @@
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="lessonID" Type="Int32" Nullable="false" />
-          <Property Name="weekday" Type="Int32" Nullable="false" />
+          <Property Name="weekday" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
           <Property Name="begintime" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
           <Property Name="endtime" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
           <Property Name="lessonname" Type="String" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
@@ -87,7 +87,7 @@
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2008/09/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="SchoolMonitorModelStoreContainer" CdmEntityContainer="SchoolMonitorEntities2">
+        <EntityContainerMapping StorageEntityContainer="SchoolMonitorModelStoreContainer" CdmEntityContainer="SchoolMonitorEntities4">
           <EntitySetMapping Name="CheckLessons">
             <EntityTypeMapping TypeName="SchoolMonitorModel.CheckLessons">
               <MappingFragment StoreEntitySet="CheckLessons">
@@ -95,7 +95,7 @@
                 <ScalarProperty Name="classroomID" ColumnName="classroomID" />
                 <ScalarProperty Name="numshouldbe" ColumnName="numshouldbe" />
                 <ScalarProperty Name="numrealbe" ColumnName="numrealbe" />
-                <ScalarProperty Name="lessonID" ColumnName="lessonID" />
+                <ScalarProperty Name="lessonname" ColumnName="lessonname" />
                 <ScalarProperty Name="checktime" ColumnName="checktime" />
               </MappingFragment>
             </EntityTypeMapping>

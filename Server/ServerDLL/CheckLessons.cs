@@ -18,7 +18,7 @@ namespace ServerDLL
         public string classroomID { get; set; }
         public int numshouldbe { get; set; }
         public Nullable<int> numrealbe { get; set; }
-        public int lessonID { get; set; }
+        public string lessonname { get; set; }
         public Nullable<System.DateTime> checktime { get; set; }
     }
 }

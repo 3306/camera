@@ -16,7 +16,7 @@ namespace ServerDLL
     {
         public int id { get; set; }
         public int lessonID { get; set; }
-        public int weekday { get; set; }
+        public string weekday { get; set; }
         public string begintime { get; set; }
         public string endtime { get; set; }
         public string lessonname { get; set; }

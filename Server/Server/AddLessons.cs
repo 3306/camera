@@ -24,11 +24,11 @@ namespace Server
             ArrayList weekdaylist = new ArrayList();
             ArrayList begintimelist = new ArrayList();
             ArrayList endtimelist = new ArrayList();
-            weekdaylist.Add(new Vendor("星期一", "1"));
-            weekdaylist.Add(new Vendor("星期二", "2"));
-            weekdaylist.Add(new Vendor("星期三", "3"));
-            weekdaylist.Add(new Vendor("星期四", "4"));
-            weekdaylist.Add(new Vendor("星期五", "5"));
+            weekdaylist.Add(new Vendor("Monday", "Monday"));
+            weekdaylist.Add(new Vendor("Tuesday", "Tuesday"));
+            weekdaylist.Add(new Vendor("Wednesday", "Wednesday"));
+            weekdaylist.Add(new Vendor("Thursday", "Thursday"));
+            weekdaylist.Add(new Vendor("Friday", "Friday"));
             for (int i = 1; i <= 8; i++)
             {
                 begintimelist.Add(new Vendor("" + i + "", "" + i + ""));
@@ -75,9 +75,10 @@ namespace Server
         {
             lessonmodel.lessonID = int.Parse(this.LessonID.Text);
             lessonmodel.lessonname = this.LessonName.Text;
-            lessonmodel.weekday = int.Parse(this.Weekday.SelectedValue.ToString());
+            lessonmodel.weekday = this.Weekday.SelectedValue.ToString();
             lessonmodel.begintime = this.BeginTime.SelectedValue.ToString();
             lessonmodel.endtime = this.EndTime.SelectedValue.ToString();
+            lessonmodel.numshouldbe = int.Parse(this.NumShouldBe.Text);
             int i = lessonservice.InsertLesson(lessonmodel);
             MessageBox.Show(i.ToString());
             if (i == 1)

@@ -42,7 +42,7 @@ namespace ServerDLL
         {
             DBHelper dbhelper = new DBHelper();
             SqlCommand cmd = new SqlCommand();
-            string cmdstr = "insert CheckLessons (classroomID,numshouldbe,numrealbe,lessonID,checktime) values('" + checklesson.classroomID + "','" + checklesson.numshouldbe + "','" + checklesson.numrealbe + "','" + checklesson.lessonID + "','" + checklesson.checktime + "')";
+            string cmdstr = "insert CheckLessons (classroomID,numshouldbe,numrealbe,lessonname,checktime) values('" + checklesson.classroomID + "','" + checklesson.numshouldbe + "','" + checklesson.numrealbe + "','" + checklesson.lessonname + "','" + checklesson.checktime + "')";
             cmd.Connection = dbhelper.connection;
             cmd.CommandText = cmdstr;
             int successNo = 0;
