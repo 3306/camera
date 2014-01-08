@@ -29,7 +29,7 @@ namespace Server
             weekdaylist.Add(new Vendor("Wednesday", "Wednesday"));
             weekdaylist.Add(new Vendor("Thursday", "Thursday"));
             weekdaylist.Add(new Vendor("Friday", "Friday"));
-            for (int i = 1; i <= 8; i++)
+            for (int i = 1; i <= 11; i++)
             {
                 begintimelist.Add(new Vendor("" + i + "", "" + i + ""));
                 endtimelist.Add(new Vendor("" + i + "", "" + i + ""));
@@ -80,7 +80,6 @@ namespace Server
             lessonmodel.endtime = this.EndTime.SelectedValue.ToString();
             lessonmodel.numshouldbe = int.Parse(this.NumShouldBe.Text);
             int i = lessonservice.InsertLesson(lessonmodel);
-            MessageBox.Show(i.ToString());
             if (i == 1)
             {
                 MessageBox.Show("添加成功");

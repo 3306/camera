@@ -57,61 +57,81 @@ namespace Server
             ForCheckLessonsService CheckLessonsService = new ForCheckLessonsService();
             DateTime systime = DateTime.Now;
             int CurrentHour = systime.Hour;
-            switch(CurrentHour)
+            if (CurrentHour >= 8 && CurrentHour<=17)
             {
-                case 8:
-                    LessonBeginTime="1";
-                    LessonEndTime="2";
-                    break;
-                case 9:
-                    LessonBeginTime="2";
-                    LessonEndTime="3";
-                    break;
-                case 10:
-                    LessonBeginTime="3";
-                    LessonEndTime="4";
-                    break;
-                case 11:
-                    LessonBeginTime = "4";
-                    LessonEndTime="5";
-                    break;
-                case 12:
-                    LessonBeginTime="5";
-                    LessonEndTime="6";
-                    break;
-                case 13:
-                    LessonBeginTime="6";
-                    LessonEndTime="7";
-                    break;
-                case 14:
-                    LessonBeginTime="7";
-                    LessonEndTime="8";
-                    break;
+              
+                switch (CurrentHour)
+                {
+                    case 8:
+                        LessonBeginTime = "1";
+                        LessonEndTime = "2";
+                        break;
+                    case 9:
+                        LessonBeginTime = "2";
+                        LessonEndTime = "3";
+                        break;
+                    case 10:
+                        LessonBeginTime = "3";
+                        LessonEndTime = "4";
+                        break;
+                    case 11:
+                        LessonBeginTime = "4";
+                        LessonEndTime = "5";
+                        break;
+                    case 12:
+                        LessonBeginTime = "5";
+                        LessonEndTime = "6";
+                        break;
+                    case 13:
+                        LessonBeginTime = "6";
+                        LessonEndTime = "7";
+                        break;
+                    case 14:
+                        LessonBeginTime = "7";
+                        LessonEndTime = "8";
+                        break;
+                    case 15:
+                        LessonBeginTime = "8";
+                        LessonEndTime = "9";
+                        break;
+                    case 16:
+                        LessonBeginTime = "9";
+                        LessonEndTime = "10";
+                        break;
+                    case 17:
+                        LessonBeginTime = "10";
+                        LessonEndTime = "11";
+                        break;
 
+                }
+                DayOfWeek dayofweek = systime.DayOfWeek;
+                Lessons CurrentLesson = new Lessons();
+                tcpClientState.TcpClient.Close();
+                try
+                {
+                    this.CurrentImage.Image = Image.FromFile(@System.Environment.CurrentDirectory + "\\pic\\" + CurrentIP + "\\" + uid + ".jpg");
+                }
+                catch (FieldAccessException ex)
+                {
+                    Console.Write(ex.ToString());
+                }
+                FaceDetection a = new FaceDetection();
+                facenum = a.HeadCounting(System.Environment.CurrentDirectory + "\\pic\\" + CurrentIP + "\\" + uid + ".jpg");
+                ChcLes.numrealbe = int.Parse(facenum.ToString());
+                ChcLes.classroomID = ClaService.GetClassroom(CurrentIP);
+                CurrentLesson = LesService.GetLessonInfo(dayofweek.ToString(), LessonBeginTime, LessonEndTime);
+                ChcLes.numshouldbe = int.Parse(CurrentLesson.numshouldbe.ToString());
+                ChcLes.lessonname = CurrentLesson.lessonname;
+                ChcLes.checktime = systime;
+                CheckLessonsService.AddCheckLessonResult(ChcLes);
+                Thread b = new Thread(new ThreadStart(showfacenum));
+                b.Start();
             }
-            DayOfWeek dayofweek = systime.DayOfWeek;
-            Lessons CurrentLesson = new Lessons();
-            tcpClientState.TcpClient.Close();
-            try
-            { 
-                this.CurrentImage.Image = Image.FromFile(@System.Environment.CurrentDirectory + "\\pic\\" + CurrentIP + "\\" + uid + ".jpg");
-            }
-            catch(FieldAccessException ex)
+            else
             {
-                Console.Write(ex.ToString());
+                Thread b = new Thread(new ThreadStart(showfacenum));
+                b.Start();
             }
-            FaceDetection a = new FaceDetection();
-            facenum= a.HeadCounting(System.Environment.CurrentDirectory + "\\pic\\" + CurrentIP + "\\" + uid + ".jpg");
-            ChcLes.numrealbe = int.Parse(facenum.ToString());
-            ChcLes.classroomID = ClaService.GetClassroom(CurrentIP);
-            CurrentLesson = LesService.GetLessonInfo(dayofweek.ToString(),LessonBeginTime,LessonEndTime);
-            ChcLes.numshouldbe = int.Parse(CurrentLesson.numshouldbe.ToString());
-            ChcLes.lessonname = CurrentLesson.lessonname;
-            ChcLes.checktime = systime;
-            CheckLessonsService.AddCheckLessonResult(ChcLes);
-            Thread b = new Thread(new ThreadStart(showfacenum));
-            b.Start();
-            
 
         }
 
