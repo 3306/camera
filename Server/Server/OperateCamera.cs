@@ -103,11 +103,12 @@ namespace Server
             lst.Add(new Vendor("6", "6000"));
             lst.Add(new Vendor("7", "7000"));
             lst.Add(new Vendor("8", "8000"));
-            comboBox1.Items.Clear();   
+            //comboBox1.Items.Clear();   
             comboBox1.DataSource = lst;           
             comboBox1.DisplayMember = "Strtemname";
             comboBox1.ValueMember = "Strindex";
             this.Text = CurrentIP+"控制台";
+            MessageBox.Show("aa");
         }
 
         /*
@@ -142,7 +143,9 @@ namespace Server
             server.Send(tcpclient, operatingbyte);
             server.IP_send_Image = null;
              */
+            this.Dispose();
             this.Close();
+            
 
         }
         /// <summary>
