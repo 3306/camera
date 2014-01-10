@@ -36,8 +36,19 @@ namespace Server
             server.ClientConnected += new EventHandler<TcpClientConnectedEventArgs>(server_ClientConnected);
             server.ClientDisconnected += new EventHandler<TcpClientDisconnectEventArgs>(server_ClientDisconnected);
             server.DatagramReceived += new EventHandler<TcpDatagramReceivedEventArgs<byte[]>>(server_DatagramReceived);
+            server.ImageReceived += server_ImageReceived;
             server.Start();
             Print("服务器已启动");
+        }
+        /// <summary>
+        /// 接收图片时引发的事件回调
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void server_ImageReceived(object sender, TcpImageReceivedEventArgs<string> e)
+        {
+            
+            
         }
         /// <summary>
         /// 接收数据时引发的事件回调
@@ -71,6 +82,7 @@ namespace Server
         /// <param name="e"></param>
         public  void server_ClientConnected(object sender, TcpClientConnectedEventArgs e)
         {
+           // MessageBox.Show(dayofweek.ToString());
             Thread a = new Thread(new ThreadStart(updateclient));
             a.Start();
             //MessageBox.Show("已经上线" + ClientCount);
@@ -106,19 +118,11 @@ namespace Server
 
         private void check_Image(string  ip,TcpClientImageState tcpClientState)
         {
+
             OperateCamera cameraform = new OperateCamera(tcpClientState, server);
             cameraform.Show();
-            //server.printclient();        
-           // server.clients.Clear();
             server.IP_send_Image=ip.ToString();
-            //string optionsstr = "";
 
-           // byte[] tag = new byte[8];
-           // tag[0]=1;
-            //TcpClient tcpclient = new TcpClient();
-            //IPEndPoint ipe = new System.Net.IPEndPoint(IPAddress.Parse("192.168.1.107"), 9999);
-            //tcpclient.Connect(ipe);
-            //server.Send(tcpclient, tag);
         }
 
 

@@ -18,6 +18,7 @@ namespace AsyTcpServer
                 throw new ArgumentNullException("tcpClient");
             }
             this.TcpClient = tcpClient;
+            
         }
         public TcpClient TcpClient { get; private set; }
     }

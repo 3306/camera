@@ -13,10 +13,10 @@ namespace ServerDLL
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class SchoolMonitorEntities : DbContext
+    public partial class SchoolMonitorEntities2 : DbContext
     {
-        public SchoolMonitorEntities()
-            : base("name=SchoolMonitorEntities")
+        public SchoolMonitorEntities2()
+            : base("name=SchoolMonitorEntities2")
         {
         }
     
@@ -27,8 +27,6 @@ namespace ServerDLL
     
         public DbSet<CheckLessons> CheckLessons { get; set; }
         public DbSet<Classroom> Classroom { get; set; }
-        public DbSet<ForCheckLessons> ForCheckLessons { get; set; }
         public DbSet<Lessons> Lessons { get; set; }
-        public DbSet<sysdiagrams> sysdiagrams { get; set; }
     }
 }

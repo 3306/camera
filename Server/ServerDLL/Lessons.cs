@@ -20,5 +20,6 @@ namespace ServerDLL
         public string begintime { get; set; }
         public string endtime { get; set; }
         public string lessonname { get; set; }
+        public Nullable<int> numshouldbe { get; set; }
     }
 }

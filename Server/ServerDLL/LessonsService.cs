@@ -36,5 +36,33 @@ namespace ServerDLL
             }
             return successNo;
         }
+        public string GetLessonID(int weekday, string begintime, string endtime)
+        {
+            string lessonID = "";
+            DBHelper dbhelp = new DBHelper();
+            SqlCommand cmd = new SqlCommand();
+            string cmdstr= "select lessonname le from Lessons where weekday = '"+weekday+"' and  '"+begintime+"' and '"+endtime+"'";
+            try
+            {
+                cmd.Connection.Open();
+                SqlDataReader dr = cmd.ExecuteReader();
+                if (dr.Read())
+                {
+                    lessonID = dr.GetString(0);
+                }
+                return lessonID;
+            }
+            catch (SqlException e)
+            {
+                throw e;
+            }
+            finally
+            {
+                if (cmd.Connection.State == System.Data.ConnectionState.Open)
+                {
+                    cmd.Connection.Close();
+                }
+            }
+        }
     }
 }

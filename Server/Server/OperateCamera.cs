@@ -28,6 +28,7 @@ namespace Server
             InitializeComponent();
             this.tcpClientState = tcpClientState;
             this.server = server;
+            
         }
 
         private void GetImage_Click(object sender, EventArgs e)
@@ -61,6 +62,7 @@ namespace Server
             }
             FaceDetection a = new FaceDetection();
             facenum= a.HeadCounting(System.Environment.CurrentDirectory + "\\pic\\" + CurrentIP + "\\" + uid + ".jpg");
+
             Thread b = new Thread(new ThreadStart(showfacenum));
             b.Start();
             
@@ -94,16 +96,11 @@ namespace Server
         {
             CurrentIP = tcpClientState.TcpClient.Client.RemoteEndPoint.ToString().Substring(0, tcpClientState.TcpClient.Client.RemoteEndPoint.ToString().LastIndexOf(":"));
             //初始化combobox
-            ArrayList lst = new ArrayList();   　
-            lst.Add(new Vendor("1", "1000"));  
-            lst.Add(new Vendor("2", "2000"));
-            lst.Add(new Vendor("3", "3000"));
-            lst.Add(new Vendor("4", "4000"));
-            lst.Add(new Vendor("5", "5000"));
-            lst.Add(new Vendor("6", "6000"));
-            lst.Add(new Vendor("7", "7000"));
-            lst.Add(new Vendor("8", "8000"));
-            //comboBox1.Items.Clear();   
+            ArrayList lst = new ArrayList();
+            for (int i = 1; i < 8; i++)
+            {
+                lst.Add(new Vendor(""+i+"", ""+i+"000")); 
+            }
             comboBox1.DataSource = lst;           
             comboBox1.DisplayMember = "Strtemname";
             comboBox1.ValueMember = "Strindex";
