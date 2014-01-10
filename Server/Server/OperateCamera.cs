@@ -108,7 +108,7 @@ namespace Server
             comboBox1.DisplayMember = "Strtemname";
             comboBox1.ValueMember = "Strindex";
             this.Text = CurrentIP+"控制台";
-            MessageBox.Show("aa");
+            
         }
 
         /*

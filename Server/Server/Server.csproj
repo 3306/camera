@@ -80,6 +80,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddLessons.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AddLessons.Designer.cs">
+      <DependentUpon>AddLessons.cs</DependentUpon>
+    </Compile>
     <Compile Include="FaceDetection.cs" />
     <Compile Include="Index.cs">
       <SubType>Form</SubType>
@@ -95,6 +101,9 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="AddLessons.resx">
+      <DependentUpon>AddLessons.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Index.resx">
       <DependentUpon>Index.cs</DependentUpon>
     </EmbeddedResource>
@@ -110,6 +119,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="App.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -127,6 +137,10 @@
     <ProjectReference Include="..\AsyTcpServer\AsyTcpServer.csproj">
       <Project>{54e00f9f-ef1c-4f75-86e3-e2566dfcd357}</Project>
       <Name>AsyTcpServer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ServerDLL\ServerDLL.csproj">
+      <Project>{a7e3946a-57af-4861-8980-d26c5d1e2323}</Project>
+      <Name>ServerDLL</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

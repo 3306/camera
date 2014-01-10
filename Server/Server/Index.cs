@@ -12,7 +12,7 @@ using System.IO;
 using System.Threading;
 using System.Collections.Concurrent;
 using System.Net;
-
+using ServerDLL;
 namespace Server
 {
     public partial class Index : Form
@@ -125,6 +125,7 @@ namespace Server
         private void updateclient()
         {
             itero = 0;
+            ClassroomService classroomservice = new ClassroomService();
                 if (server.clients.Keys == null)
                 {
                     return;
@@ -140,12 +141,11 @@ namespace Server
                     }
                     else
                     {
-                        Button a = new Button();
-                       // string aa = client.Key.ToString() + "点的人数是" + client.Value.Buffer[0];
+                        Button a = new Button();    
                         string aa = client.Key.ToString();
-                        a.Text = aa;
-                        a.Click += delegate(Object o, EventArgs e) { check_Image(client.Key,client.Value); }; 
-                      //a.Click += new EventHandler<TcpClientConnectedEventArgs>(check_Image);
+                        string currentclassroom = classroomservice.GetClassroom(aa);
+                        a.Text = currentclassroom;
+                        a.Click += delegate(Object o, EventArgs e) { check_Image(client.Key,client.Value); };         
                         a.Width = 100;
                         a.Name = client.ToString();
                         a.Location = new  System.Drawing.Point(btn_x+itero, btn_y);
@@ -196,6 +196,12 @@ namespace Server
         {
             StartTheServer();
             this.button1.Enabled = false;
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            AddLessons a = new AddLessons();
+            a.Show();
         }
 
     }
